@@ -20,6 +20,7 @@ import android.annotation.Nullable;
 import android.graphics.PorterDuff;
 import com.android.internal.R;
 
+import android.annotation.InterpolatorRes;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -1507,7 +1508,7 @@ public class ProgressBar extends View {
      * @param context The application environment
      * @param resID The resource identifier of the interpolator to load
      */
-    public void setInterpolator(Context context, int resID) {
+    public void setInterpolator(Context context, @InterpolatorRes int resID) {
         setInterpolator(AnimationUtils.loadInterpolator(context, resID));
     }
 
