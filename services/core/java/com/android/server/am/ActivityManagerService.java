@@ -10885,7 +10885,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                 ActivityManager.ProcessErrorStateInfo.CRASHED, null, shortMsg, longMsg, stackTrace);
         startAppProblemLocked(app);
         app.stopFreezingAllLocked();
-        return handleAppCrashLocked(app, shortMsg, longMsg, stackTrace);
+        return handleAppCrashLocked(app, "force-crash" /*reason*/, shortMsg, longMsg, stackTrace);
     }
 
     private void makeAppNotRespondingLocked(ProcessRecord app,
@@ -10940,14 +10940,15 @@ public final class ActivityManagerService extends ActivityManagerNative
                 app.waitDialog = null;
             }
             if (app.pid > 0 && app.pid != MY_PID) {
-                handleAppCrashLocked(app, null, null, null);
+                handleAppCrashLocked(app, "user-terminated" /*reason*/,
+                        null /*shortMsg*/, null /*longMsg*/, null /*stackTrace*/);
                 app.kill("user request after error", true);
             }
         }
     }
 
-    private boolean handleAppCrashLocked(ProcessRecord app, String shortMsg, String longMsg,
-            String stackTrace) {
+    private boolean handleAppCrashLocked(ProcessRecord app, String reason,
+            String shortMsg, String longMsg, String stackTrace) {
         long now = SystemClock.uptimeMillis();
 
         Long crashTime;
@@ -10988,7 +10989,7 @@ public final class ActivityManagerService extends ActivityManagerNative
             }
             mStackSupervisor.resumeTopActivitiesLocked();
         } else {
-            mStackSupervisor.finishTopRunningActivityLocked(app);
+            mStackSupervisor.finishTopRunningActivityLocked(app, reason);
         }
 
         // Bump up the crash count of any services currently running in the proc.

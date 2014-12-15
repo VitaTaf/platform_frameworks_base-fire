@@ -620,8 +620,8 @@ final class TaskRecord {
                 mActivities.remove(activityNdx);
                 --activityNdx;
                 --numActivities;
-            } else if (stack.finishActivityLocked(r, Activity.RESULT_CANCELED, null, "clear",
-                    false)) {
+            } else if (stack.finishActivityLocked(
+                    r, Activity.RESULT_CANCELED, null, "clear-task-index", false)) {
                 --activityNdx;
                 --numActivities;
             }
@@ -668,8 +668,8 @@ final class TaskRecord {
                     if (opts != null) {
                         ret.updateOptionsLocked(opts);
                     }
-                    if (stack.finishActivityLocked(r, Activity.RESULT_CANCELED, null, "clear",
-                            false)) {
+                    if (stack.finishActivityLocked(
+                            r, Activity.RESULT_CANCELED, null, "clear-task-stack", false)) {
                         --activityNdx;
                         --numActivities;
                     }
@@ -681,8 +681,8 @@ final class TaskRecord {
                 if (ret.launchMode == ActivityInfo.LAUNCH_MULTIPLE
                         && (launchFlags & Intent.FLAG_ACTIVITY_SINGLE_TOP) == 0) {
                     if (!ret.finishing) {
-                        stack.finishActivityLocked(ret, Activity.RESULT_CANCELED, null,
-                                "clear", false);
+                        stack.finishActivityLocked(
+                                ret, Activity.RESULT_CANCELED, null, "clear-task-top", false);
                         return null;
                     }
                 }
