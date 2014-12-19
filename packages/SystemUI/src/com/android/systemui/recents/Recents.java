@@ -38,10 +38,12 @@ import android.os.SystemClock;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Pair;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.android.systemui.R;
 import com.android.systemui.RecentsComponent;
+import com.android.systemui.SystemUI;
 import com.android.systemui.recents.misc.Console;
 import com.android.systemui.recents.misc.SystemServicesProxy;
 import com.android.systemui.recents.model.RecentsTaskLoadPlan;
@@ -70,7 +72,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @interface ProxyFromAnyToPrimaryUser {}
 
 /** A proxy implementation for the recents component */
-public class AlternateRecentsComponent implements ActivityOptions.OnAnimationStartedListener {
+public class Recents extends SystemUI
+        implements ActivityOptions.OnAnimationStartedListener, RecentsComponent {
 
     final public static String EXTRA_TRIGGERED_FROM_ALT_TAB = "triggeredFromAltTab";
     final public static String EXTRA_TRIGGERED_FROM_HOME_KEY = "triggeredFromHomeKey";
@@ -150,8 +153,8 @@ public class AlternateRecentsComponent implements ActivityOptions.OnAnimationSta
 
     static RecentsComponent.Callbacks sRecentsComponentCallbacks;
     static RecentsTaskLoadPlan sInstanceLoadPlan;
+    static Recents sInstance;
 
-    Context mContext;
     LayoutInflater mInflater;
     SystemServicesProxy mSystemServicesProxy;
     Handler mHandler;
@@ -179,28 +182,22 @@ public class AlternateRecentsComponent implements ActivityOptions.OnAnimationSta
     boolean mTriggeredFromAltTab;
     long mLastToggleTime;
 
-    public AlternateRecentsComponent(Context context) {
-        RecentsTaskLoader.initialize(context);
-        mInflater = LayoutInflater.from(context);
-        mContext = context;
-        mSystemServicesProxy = new SystemServicesProxy(context);
-        mHandler = new Handler();
-        mTaskStackBounds = new Rect();
+    public Recents() {
+    }
 
-        // Register the task stack listener
-        mTaskStackListener = new TaskStackListenerImpl(mHandler);
-        mSystemServicesProxy.registerTaskStackListener(mTaskStackListener);
-
-        // Only the owner has the callback to update the SysUI visibility flags, so all non-owner
-        // instances of AlternateRecentsComponent needs to notify the owner when the visibility
-        // changes.
-        if (mSystemServicesProxy.isForegroundUserOwner()) {
-            mProxyBroadcastReceiver = new RecentsOwnerEventProxyReceiver();
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(AlternateRecentsComponent.ACTION_PROXY_NOTIFY_RECENTS_VISIBLITY_TO_OWNER);
-            mContext.registerReceiverAsUser(mProxyBroadcastReceiver, UserHandle.CURRENT, filter,
-                    null, mHandler);
+    /**
+     * Gets the singleton instance and starts it if needed. On the primary user on the device, this
+     * component gets started as a normal {@link SystemUI} component. On a secondary user, this
+     * lifecycle doesn't exist, so we need to start it manually here if needed.
+     */
+    public static Recents getInstanceAndStartIfNeeded(Context ctx) {
+        if (sInstance == null) {
+            sInstance = new Recents();
+            sInstance.mContext = ctx;
+            sInstance.start();
+            sInstance.onBootCompleted();
         }
+        return sInstance;
     }
 
     /** Creates a new broadcast intent */
@@ -214,7 +211,32 @@ public class AlternateRecentsComponent implements ActivityOptions.OnAnimationSta
 
     /** Initializes the Recents. */
     @ProxyFromPrimaryToCurrentUser
-    public void onStart() {
+    @Override
+    public void start() {
+        if (sInstance == null) {
+            sInstance = this;
+        }
+        RecentsTaskLoader.initialize(mContext);
+        mInflater = LayoutInflater.from(mContext);
+        mSystemServicesProxy = new SystemServicesProxy(mContext);
+        mHandler = new Handler();
+        mTaskStackBounds = new Rect();
+
+        // Register the task stack listener
+        mTaskStackListener = new TaskStackListenerImpl(mHandler);
+        mSystemServicesProxy.registerTaskStackListener(mTaskStackListener);
+
+        // Only the owner has the callback to update the SysUI visibility flags, so all non-owner
+        // instances of AlternateRecentsComponent needs to notify the owner when the visibility
+        // changes.
+        if (mSystemServicesProxy.isForegroundUserOwner()) {
+            mProxyBroadcastReceiver = new RecentsOwnerEventProxyReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(Recents.ACTION_PROXY_NOTIFY_RECENTS_VISIBLITY_TO_OWNER);
+            mContext.registerReceiverAsUser(mProxyBroadcastReceiver, UserHandle.CURRENT, filter,
+                    null, mHandler);
+        }
+
         // Initialize some static datastructures
         TaskStackViewLayoutAlgorithm.initializeCurve();
         // Load the header bar layout
@@ -230,23 +252,20 @@ public class AlternateRecentsComponent implements ActivityOptions.OnAnimationSta
         launchOpts.numVisibleTaskThumbnails = loader.getThumbnailCacheSize();
         launchOpts.onlyLoadForCache = true;
         loader.loadTasks(mContext, plan, launchOpts);
+        putComponent(Recents.class, this);
     }
 
+    @Override
     public void onBootCompleted() {
         mBootCompleted = true;
     }
 
     /** Shows the Recents. */
     @ProxyFromPrimaryToCurrentUser
-    public void onShowRecents(boolean triggeredFromAltTab) {
-        // Ensure the device has been provisioned before allowing the user to interact with
-        // recents
-        if (!isDeviceProvisioned()) {
-            return;
-        }
-
+    @Override
+    public void showRecents(boolean triggeredFromAltTab, View statusBarView) {
         if (mSystemServicesProxy.isForegroundUserOwner()) {
-            showRecents(triggeredFromAltTab);
+            showRecentsInternal(triggeredFromAltTab);
         } else {
             Intent intent = createLocalBroadcastIntent(mContext,
                     RecentsUserEventProxyReceiver.ACTION_PROXY_SHOW_RECENTS_TO_USER);
@@ -254,7 +273,8 @@ public class AlternateRecentsComponent implements ActivityOptions.OnAnimationSta
             mContext.sendBroadcastAsUser(intent, UserHandle.CURRENT);
         }
     }
-    void showRecents(boolean triggeredFromAltTab) {
+
+    void showRecentsInternal(boolean triggeredFromAltTab) {
         mTriggeredFromAltTab = triggeredFromAltTab;
 
         try {
@@ -266,15 +286,10 @@ public class AlternateRecentsComponent implements ActivityOptions.OnAnimationSta
 
     /** Hides the Recents. */
     @ProxyFromPrimaryToCurrentUser
-    public void onHideRecents(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) {
-        // Ensure the device has been provisioned before allowing the user to interact with
-        // recents
-        if (!isDeviceProvisioned()) {
-            return;
-        }
-
+    @Override
+    public void hideRecents(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) {
         if (mSystemServicesProxy.isForegroundUserOwner()) {
-            hideRecents(triggeredFromAltTab, triggeredFromHomeKey);
+            hideRecentsInternal(triggeredFromAltTab, triggeredFromHomeKey);
         } else {
             Intent intent = createLocalBroadcastIntent(mContext,
                     RecentsUserEventProxyReceiver.ACTION_PROXY_HIDE_RECENTS_TO_USER);
@@ -283,7 +298,8 @@ public class AlternateRecentsComponent implements ActivityOptions.OnAnimationSta
             mContext.sendBroadcastAsUser(intent, UserHandle.CURRENT);
         }
     }
-    void hideRecents(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) {
+
+    void hideRecentsInternal(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) {
         if (mBootCompleted) {
             ActivityManager.RunningTaskInfo topTask = getTopMostTask();
             if (topTask != null && isRecentsTopMost(topTask, null)) {
@@ -298,22 +314,18 @@ public class AlternateRecentsComponent implements ActivityOptions.OnAnimationSta
 
     /** Toggles the Recents activity. */
     @ProxyFromPrimaryToCurrentUser
-    public void onToggleRecents() {
-        // Ensure the device has been provisioned before allowing the user to interact with
-        // recents
-        if (!isDeviceProvisioned()) {
-            return;
-        }
-
+    @Override
+    public void toggleRecents(Display display, int layoutDirection, View statusBarView) {
         if (mSystemServicesProxy.isForegroundUserOwner()) {
-            toggleRecents();
+            toggleRecentsInternal();
         } else {
             Intent intent = createLocalBroadcastIntent(mContext,
                     RecentsUserEventProxyReceiver.ACTION_PROXY_TOGGLE_RECENTS_TO_USER);
             mContext.sendBroadcastAsUser(intent, UserHandle.CURRENT);
         }
     }
-    void toggleRecents() {
+
+    void toggleRecentsInternal() {
         mTriggeredFromAltTab = false;
 
         try {
@@ -325,22 +337,18 @@ public class AlternateRecentsComponent implements ActivityOptions.OnAnimationSta
 
     /** Preloads info for the Recents activity. */
     @ProxyFromPrimaryToCurrentUser
-    public void onPreloadRecents() {
-        // Ensure the device has been provisioned before allowing the user to interact with
-        // recents
-        if (!isDeviceProvisioned()) {
-            return;
-        }
-
+    @Override
+    public void preloadRecents() {
         if (mSystemServicesProxy.isForegroundUserOwner()) {
-            preloadRecents();
+            preloadRecentsInternal();
         } else {
             Intent intent = createLocalBroadcastIntent(mContext,
                     RecentsUserEventProxyReceiver.ACTION_PROXY_PRELOAD_RECENTS_TO_USER);
             mContext.sendBroadcastAsUser(intent, UserHandle.CURRENT);
         }
     }
-    void preloadRecents() {
+
+    void preloadRecentsInternal() {
         // Preload only the raw task list into a new load plan (which will be consumed by the
         // RecentsActivity)
         RecentsTaskLoader loader = RecentsTaskLoader.getInstance();
@@ -348,7 +356,8 @@ public class AlternateRecentsComponent implements ActivityOptions.OnAnimationSta
         sInstanceLoadPlan.preloadRawTasks(true);
     }
 
-    public void onCancelPreloadingRecents() {
+    @Override
+    public void cancelPreloadingRecents() {
         // Do nothing
     }
 
@@ -423,23 +432,13 @@ public class AlternateRecentsComponent implements ActivityOptions.OnAnimationSta
         }
     }
 
-    public void onShowNextAffiliatedTask() {
-        // Ensure the device has been provisioned before allowing the user to interact with
-        // recents
-        if (!isDeviceProvisioned()) {
-            return;
-        }
-
+    @Override
+    public void showNextAffiliatedTask() {
         showRelativeAffiliatedTask(true);
     }
 
-    public void onShowPrevAffiliatedTask() {
-        // Ensure the device has been provisioned before allowing the user to interact with
-        // recents
-        if (!isDeviceProvisioned()) {
-            return;
-        }
-
+    @Override
+    public void showPrevAffiliatedTask() {
         showRelativeAffiliatedTask(false);
     }
 
@@ -782,7 +781,8 @@ public class AlternateRecentsComponent implements ActivityOptions.OnAnimationSta
     }
 
     /** Sets the RecentsComponent callbacks. */
-    public void setRecentsComponentCallback(RecentsComponent.Callbacks cb) {
+    @Override
+    public void setCallback(RecentsComponent.Callbacks cb) {
         sRecentsComponentCallbacks = cb;
     }
 
