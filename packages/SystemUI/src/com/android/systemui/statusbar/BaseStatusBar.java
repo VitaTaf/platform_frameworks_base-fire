@@ -138,9 +138,6 @@ public abstract class BaseStatusBar extends SystemUI implements
     // Should match the value in PhoneWindowManager
     public static final String SYSTEM_DIALOG_REASON_RECENT_APPS = "recentapps";
 
-    public static final int EXPANDED_LEAVE_ALONE = -10000;
-    public static final int EXPANDED_FULL_OPEN = -10001;
-
     private static final String BANNER_ACTION_CANCEL =
             "com.android.systemui.statusbar.banner_action_cancel";
     private static final String BANNER_ACTION_SETUP =
@@ -1863,7 +1860,6 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected abstract void setAreThereNotifications();
     protected abstract void updateNotifications();
-    protected abstract void updateExpandedViewPos(int expandedPosition);
     protected abstract boolean shouldDisableNavbarGestures();
 
     public abstract void addNotification(StatusBarNotification notification,
@@ -2055,7 +2051,6 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         // Recalculate the position of the sliding windows and the titles.
         setAreThereNotifications();
-        updateExpandedViewPos(EXPANDED_LEAVE_ALONE);
     }
 
     private void updateNotificationViews(NotificationData.Entry entry,
