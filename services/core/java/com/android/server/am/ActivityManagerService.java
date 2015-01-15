@@ -8021,7 +8021,7 @@ public final class ActivityManagerService extends ActivityManagerNative
         outInfo.foregroundAppThreshold = mProcessList.getMemLevel(
                 ProcessList.FOREGROUND_APP_ADJ);
     }
-    
+
     // =========================================================
     // TASK MANAGEMENT
     // =========================================================
@@ -8549,40 +8549,10 @@ public final class ActivityManagerService extends ActivityManagerNative
         ActivityOptions.abort(options);
     }
 
-    @Override
-    public void moveTaskToBack(int taskId) {
-        enforceCallingPermission(android.Manifest.permission.REORDER_TASKS,
-                "moveTaskToBack()");
-
-        synchronized(this) {
-            TaskRecord tr = mStackSupervisor.anyTaskForIdLocked(taskId);
-            if (tr != null) {
-                if (tr == mStackSupervisor.mLockTaskModeTask) {
-                    mStackSupervisor.showLockTaskToast();
-                    return;
-                }
-                if (DEBUG_STACK) Slog.d(TAG, "moveTaskToBack: moving task=" + tr);
-                ActivityStack stack = tr.stack;
-                if (stack.mResumedActivity != null && stack.mResumedActivity.task == tr) {
-                    if (!checkAppSwitchAllowedLocked(Binder.getCallingPid(),
-                            Binder.getCallingUid(), -1, -1, "Task to back")) {
-                        return;
-                    }
-                }
-                final long origId = Binder.clearCallingIdentity();
-                try {
-                    stack.moveTaskToBackLocked(taskId);
-                } finally {
-                    Binder.restoreCallingIdentity(origId);
-                }
-            }
-        }
-    }
-
     /**
      * Moves an activity, and all of the other activities within the same task, to the bottom
      * of the history stack.  The activity's order within the task is unchanged.
-     * 
+     *
      * @param token A reference to the activity we wish to move
      * @param nonRoot If false then this only works if the activity is the root
      *                of a task; if true it will work for any activity in a task.
@@ -9007,7 +8977,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                 == PackageManager.PERMISSION_GRANTED) {
             return null;
         }
-        
+
         PathPermission[] pps = cpi.pathPermissions;
         if (pps != null) {
             int i = pps.length;
@@ -12194,14 +12164,14 @@ public final class ActivityManagerService extends ActivityManagerNative
                     } else if (app.notResponding) {
                         report = app.notRespondingReport;
                     }
-                    
+
                     if (report != null) {
                         if (errList == null) {
                             errList = new ArrayList<ActivityManager.ProcessErrorStateInfo>(1);
                         }
                         errList.add(report);
                     } else {
-                        Slog.w(TAG, "Missing app error report, app = " + app.processName + 
+                        Slog.w(TAG, "Missing app error report, app = " + app.processName +
                                 " crashing = " + app.crashing +
                                 " notResponding = " + app.notResponding);
                     }
@@ -12267,7 +12237,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                 }
                 if ((app.thread != null) && (!app.crashing && !app.notResponding)) {
                     // Generate process state info for running application
-                    ActivityManager.RunningAppProcessInfo currApp = 
+                    ActivityManager.RunningAppProcessInfo currApp =
                         new ActivityManager.RunningAppProcessInfo(app.processName,
                                 app.pid, app.getPackageList());
                     fillInProcMemInfo(app, currApp);
@@ -12349,7 +12319,7 @@ public final class ActivityManagerService extends ActivityManagerNative
         boolean dumpAll = false;
         boolean dumpClient = false;
         String dumpPackage = null;
-        
+
         int opti = 0;
         while (opti < args.length) {
             String opt = args[opti];
