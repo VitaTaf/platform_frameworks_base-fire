@@ -16,6 +16,7 @@
 
 package android.view;
 
+import android.annotation.Nullable;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Message;
@@ -361,7 +362,7 @@ public abstract class LayoutInflater {
      *         this is the root View; otherwise it is the root of the inflated
      *         XML file.
      */
-    public View inflate(int resource, ViewGroup root) {
+    public View inflate(int resource, @Nullable ViewGroup root) {
         return inflate(resource, root, root != null);
     }
 
@@ -381,7 +382,7 @@ public abstract class LayoutInflater {
      *         this is the root View; otherwise it is the root of the inflated
      *         XML file.
      */
-    public View inflate(XmlPullParser parser, ViewGroup root) {
+    public View inflate(XmlPullParser parser, @Nullable ViewGroup root) {
         return inflate(parser, root, root != null);
     }
 
@@ -402,7 +403,7 @@ public abstract class LayoutInflater {
      *         attachToRoot is true, this is root; otherwise it is the root of
      *         the inflated XML file.
      */
-    public View inflate(int resource, ViewGroup root, boolean attachToRoot) {
+    public View inflate(int resource, @Nullable ViewGroup root, boolean attachToRoot) {
         final Resources res = getContext().getResources();
         if (DEBUG) {
             Log.d(TAG, "INFLATING from resource: \"" + res.getResourceName(resource) + "\" ("
@@ -439,7 +440,7 @@ public abstract class LayoutInflater {
      *         attachToRoot is true, this is root; otherwise it is the root of
      *         the inflated XML file.
      */
-    public View inflate(XmlPullParser parser, ViewGroup root, boolean attachToRoot) {
+    public View inflate(XmlPullParser parser, @Nullable ViewGroup root, boolean attachToRoot) {
         synchronized (mConstructorArgs) {
             Trace.traceBegin(Trace.TRACE_TAG_VIEW, "inflate");
 
