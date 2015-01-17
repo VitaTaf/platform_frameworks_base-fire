@@ -436,6 +436,8 @@ public interface IActivityManager extends IInterface {
     public IActivityContainer createVirtualActivityContainer(IBinder parentActivityToken,
             IActivityContainerCallback callback) throws RemoteException;
 
+    public IActivityContainer createStackOnDisplay(int displayId) throws RemoteException;
+
     public void deleteActivityContainer(IActivityContainer container) throws RemoteException;
 
     public IActivityContainer getEnclosingActivityContainer(IBinder activityToken)
@@ -795,5 +797,6 @@ public interface IActivityManager extends IInterface {
     int SYSTEM_BACKUP_RESTORED = IBinder.FIRST_CALL_TRANSACTION+243;
 
     // Start of M transactions
+    int CREATE_STACK_ON_DISPLAY = IBinder.FIRST_CALL_TRANSACTION+281;
     int GET_FOCUSED_STACK_ID_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+282;
 }
