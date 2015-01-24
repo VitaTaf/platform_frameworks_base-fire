@@ -5250,7 +5250,12 @@ public class WindowManagerService extends IWindowManager.Stub
         }
     }
 
-    public void resizeStack(int stackId, Rect bounds) {
+    /**
+     * Re-sizes the specified stack and its containing windows.
+     * Returns a {@link Configuration} object that contains configurations settings
+     * that should be overridden due to the operation.
+     */
+    public Configuration resizeStack(int stackId, Rect bounds) {
         synchronized (mWindowMap) {
             final TaskStack stack = mStackIdToStack.get(stackId);
             if (stack == null) {
@@ -5262,6 +5267,7 @@ public class WindowManagerService extends IWindowManager.Stub
                 stack.getDisplayContent().layoutNeeded = true;
                 performLayoutAndPlaceSurfacesLocked();
             }
+            return new Configuration(stack.mOverrideConfig);
         }
     }
 
@@ -7189,7 +7195,7 @@ public class WindowManagerService extends IWindowManager.Stub
         return sw;
     }
 
-    boolean computeScreenConfigurationLocked(Configuration config) {
+    private boolean computeScreenConfigurationLocked(Configuration config) {
         if (!mDisplayReady) {
             return false;
         }
