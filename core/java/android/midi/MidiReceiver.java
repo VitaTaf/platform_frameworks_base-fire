@@ -31,6 +31,8 @@ public interface MidiReceiver {
      * NOTE: the msg array parameter is only valid within the context of this call.
      * The msg bytes should be copied by the receiver rather than retaining a reference
      * to this parameter.
+     * Also, modifying the contents of the msg array parameter may result in other receivers
+     * in the same application receiving incorrect values in their onPost() method.
      *
      * @param msg a byte array containing the MIDI data
      * @param offset the offset of the first byte of the data in the byte array
