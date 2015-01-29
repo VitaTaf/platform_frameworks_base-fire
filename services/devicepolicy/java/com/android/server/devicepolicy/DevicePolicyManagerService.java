@@ -1913,12 +1913,12 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
         }
     }
 
-    public void setPasswordQuality(ComponentName who, int quality, int userHandle) {
+    public void setPasswordQuality(ComponentName who, int quality) {
         if (!mHasFeature) {
             return;
         }
+        final int userHandle = UserHandle.getCallingUserId();
         validateQualityConstant(quality);
-        enforceCrossUserPermission(userHandle);
 
         synchronized (this) {
             if (who == null) {
@@ -1962,11 +1962,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
         }
     }
 
-    public void setPasswordMinimumLength(ComponentName who, int length, int userHandle) {
+    public void setPasswordMinimumLength(ComponentName who, int length) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -2009,11 +2009,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
         }
     }
 
-    public void setPasswordHistoryLength(ComponentName who, int length, int userHandle) {
+    public void setPasswordHistoryLength(ComponentName who, int length) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -2056,11 +2056,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
         }
     }
 
-    public void setPasswordExpirationTimeout(ComponentName who, long timeout, int userHandle) {
+    public void setPasswordExpirationTimeout(ComponentName who, long timeout) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -2225,11 +2225,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
         }
     }
 
-    public void setPasswordMinimumUpperCase(ComponentName who, int length, int userHandle) {
+    public void setPasswordMinimumUpperCase(ComponentName who, int length) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -2272,8 +2272,8 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
         }
     }
 
-    public void setPasswordMinimumLowerCase(ComponentName who, int length, int userHandle) {
-        enforceCrossUserPermission(userHandle);
+    public void setPasswordMinimumLowerCase(ComponentName who, int length) {
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -2316,11 +2316,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
         }
     }
 
-    public void setPasswordMinimumLetters(ComponentName who, int length, int userHandle) {
+    public void setPasswordMinimumLetters(ComponentName who, int length) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -2363,11 +2363,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
         }
     }
 
-    public void setPasswordMinimumNumeric(ComponentName who, int length, int userHandle) {
+    public void setPasswordMinimumNumeric(ComponentName who, int length) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -2410,11 +2410,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
         }
     }
 
-    public void setPasswordMinimumSymbols(ComponentName who, int length, int userHandle) {
+    public void setPasswordMinimumSymbols(ComponentName who, int length) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -2457,11 +2457,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
         }
     }
 
-    public void setPasswordMinimumNonLetter(ComponentName who, int length, int userHandle) {
+    public void setPasswordMinimumNonLetter(ComponentName who, int length) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -2521,8 +2521,7 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
 
             // This API can only be called by an active device admin,
             // so try to retrieve it to check that the caller is one.
-            getActiveAdminForCallerLocked(null,
-                    DeviceAdminInfo.USES_POLICY_LIMIT_PASSWORD);
+            getActiveAdminForCallerLocked(null, DeviceAdminInfo.USES_POLICY_LIMIT_PASSWORD);
             if (policy.mActivePasswordQuality < getPasswordQuality(null, userHandle)
                     || policy.mActivePasswordLength < getPasswordMinimumLength(null, userHandle)) {
                 return false;
@@ -2555,11 +2554,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
         }
     }
 
-    public void setMaximumFailedPasswordsForWipe(ComponentName who, int num, int userHandle) {
+    public void setMaximumFailedPasswordsForWipe(ComponentName who, int num) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -2631,11 +2630,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
         return strictestAdmin;
     }
 
-    public boolean resetPassword(String passwordOrNull, int flags, int userHandle) {
+    public boolean resetPassword(String passwordOrNull, int flags) {
         if (!mHasFeature) {
             return false;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         enforceNotManagedProfile(userHandle, "reset the password");
 
         String password = passwordOrNull != null ? passwordOrNull : "";
@@ -2766,11 +2765,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
         return true;
     }
 
-    public void setMaximumTimeToLock(ComponentName who, long timeMs, int userHandle) {
+    public void setMaximumTimeToLock(ComponentName who, long timeMs) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -3235,11 +3234,10 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
     }
 
     public ComponentName setGlobalProxy(ComponentName who, String proxySpec,
-            String exclusionList, int userHandle) {
+            String exclusionList) {
         if (!mHasFeature) {
             return null;
         }
-        enforceCrossUserPermission(userHandle);
         synchronized(this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -3265,7 +3263,7 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
             // If the user is not the owner, don't set the global proxy. Fail silently.
             if (UserHandle.getCallingUserId() != UserHandle.USER_OWNER) {
                 Slog.w(LOG_TAG, "Only the owner is allowed to set the global proxy. User "
-                        + userHandle + " is not permitted.");
+                        + UserHandle.getCallingUserId() + " is not permitted.");
                 return null;
             }
             if (proxySpec == null) {
@@ -3375,11 +3373,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
      * Set the storage encryption request for a single admin.  Returns the new total request
      * status (for all admins).
      */
-    public int setStorageEncryption(ComponentName who, boolean encrypt, int userHandle) {
+    public int setStorageEncryption(ComponentName who, boolean encrypt) {
         if (!mHasFeature) {
             return DevicePolicyManager.ENCRYPTION_STATUS_UNSUPPORTED;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             // Check for permissions
             if (who == null) {
@@ -3511,11 +3509,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
     /**
      * Set whether the screen capture is disabled for the user managed by the specified admin.
      */
-    public void setScreenCaptureDisabled(ComponentName who, int userHandle, boolean disabled) {
+    public void setScreenCaptureDisabled(ComponentName who, boolean disabled) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -3570,11 +3568,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
     /**
      * Set whether auto time is required by the specified admin (must be device owner).
      */
-    public void setAutoTimeRequired(ComponentName who, int userHandle, boolean required) {
+    public void setAutoTimeRequired(ComponentName who, boolean required) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -3621,11 +3619,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
     /**
      * Disables all device cameras according to the specified admin.
      */
-    public void setCameraDisabled(ComponentName who, boolean disabled, int userHandle) {
+    public void setCameraDisabled(ComponentName who, boolean disabled) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
@@ -3670,11 +3668,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
     /**
      * Selectively disable keyguard features.
      */
-    public void setKeyguardDisabledFeatures(ComponentName who, int which, int userHandle) {
+    public void setKeyguardDisabledFeatures(ComponentName who, int which) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         enforceNotManagedProfile(userHandle, "disable keyguard features");
         synchronized (this) {
             if (who == null) {
@@ -4220,11 +4218,11 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
     }
 
     public void setTrustAgentConfiguration(ComponentName admin, ComponentName agent,
-            PersistableBundle args, int userHandle) {
+            PersistableBundle args) {
         if (!mHasFeature) {
             return;
         }
-        enforceCrossUserPermission(userHandle);
+        final int userHandle = UserHandle.getCallingUserId();
         enforceNotManagedProfile(userHandle, "set trust agent configuration");
         synchronized (this) {
             if (admin == null) {
@@ -5377,8 +5375,6 @@ public class DevicePolicyManagerService extends IDevicePolicyManager.Stub {
 
     @Override
     public void setMasterVolumeMuted(ComponentName who, boolean on) {
-        final ContentResolver contentResolver = mContext.getContentResolver();
-
         synchronized (this) {
             if (who == null) {
                 throw new NullPointerException("ComponentName is null");
