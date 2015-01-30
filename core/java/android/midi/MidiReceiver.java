@@ -19,21 +19,22 @@ package android.midi;
 import java.io.IOException;
 
 /**
- * Interface for receiving events from a MIDI device.
+ * Interface for receiving data from a MIDI device.
  *
+ * CANDIDATE FOR PUBLIC API
  * @hide
  */
 public interface MidiReceiver {
     /**
-     * Called to pass a MIDI event to the receiver.
+     * Called to pass MIDI data to the receiver.
      *
      * NOTE: the msg array parameter is only valid within the context of this call.
      * The msg bytes should be copied by the receiver rather than retaining a reference
      * to this parameter.
      *
-     * @param msg a byte array containing the MIDI message
-     * @param offset the offset of the first byte of the message in the byte array
-     * @param count the number of bytes in the message
+     * @param msg a byte array containing the MIDI data
+     * @param offset the offset of the first byte of the data in the byte array
+     * @param count the number of bytes of MIDI data in the array
      * @param timestamp the timestamp of the message (based on {@link java.lang.System#nanoTime}
      * @throws IOException
      */
