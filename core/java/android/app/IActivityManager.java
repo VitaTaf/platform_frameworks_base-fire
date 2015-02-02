@@ -458,6 +458,7 @@ public interface IActivityManager extends IInterface {
 
     public void setTaskDescription(IBinder token, ActivityManager.TaskDescription values)
             throws RemoteException;
+    public void setTaskResizeable(int taskId, boolean resizeable) throws RemoteException;
     public Bitmap getTaskDescriptionIcon(String filename) throws RemoteException;
 
     public void startInPlaceAnimationOnFrontMostApplication(ActivityOptions opts)
@@ -798,4 +799,5 @@ public interface IActivityManager extends IInterface {
     // Start of M transactions
     int CREATE_STACK_ON_DISPLAY = IBinder.FIRST_CALL_TRANSACTION+281;
     int GET_FOCUSED_STACK_ID_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+282;
+    int SET_TASK_RESIZEABLE_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+283;
 }
