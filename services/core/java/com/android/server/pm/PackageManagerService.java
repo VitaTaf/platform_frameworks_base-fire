@@ -1300,17 +1300,17 @@ public class PackageManagerService extends IPackageManager.Stub {
         mMetrics = new DisplayMetrics();
         mSettings = new Settings(context);
         mSettings.addSharedUserLPw("android.uid.system", Process.SYSTEM_UID,
-                ApplicationInfo.FLAG_SYSTEM|ApplicationInfo.FLAG_PRIVILEGED);
+                ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);
         mSettings.addSharedUserLPw("android.uid.phone", RADIO_UID,
-                ApplicationInfo.FLAG_SYSTEM|ApplicationInfo.FLAG_PRIVILEGED);
+                ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);
         mSettings.addSharedUserLPw("android.uid.log", LOG_UID,
-                ApplicationInfo.FLAG_SYSTEM|ApplicationInfo.FLAG_PRIVILEGED);
+                ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);
         mSettings.addSharedUserLPw("android.uid.nfc", NFC_UID,
-                ApplicationInfo.FLAG_SYSTEM|ApplicationInfo.FLAG_PRIVILEGED);
+                ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);
         mSettings.addSharedUserLPw("android.uid.bluetooth", BLUETOOTH_UID,
-                ApplicationInfo.FLAG_SYSTEM|ApplicationInfo.FLAG_PRIVILEGED);
+                ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);
         mSettings.addSharedUserLPw("android.uid.shell", SHELL_UID,
-                ApplicationInfo.FLAG_SYSTEM|ApplicationInfo.FLAG_PRIVILEGED);
+                ApplicationInfo.FLAG_SYSTEM, ApplicationInfo.PRIVATE_FLAG_PRIVILEGED);
 
         // TODO: add a property to control this?
         long dexOptLRUThresholdInMinutes;
@@ -2125,6 +2125,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                 pkg = new PackageParser.Package(packageName);
                 pkg.applicationInfo.packageName = packageName;
                 pkg.applicationInfo.flags = ps.pkgFlags | ApplicationInfo.FLAG_IS_DATA_ONLY;
+                pkg.applicationInfo.privateFlags = ps.pkgPrivateFlags;
                 pkg.applicationInfo.dataDir =
                         getDataPathForPackage(packageName, 0).getPath();
                 pkg.applicationInfo.primaryCpuAbi = ps.primaryCpuAbiString;
@@ -2967,7 +2968,7 @@ public class PackageManagerService extends IPackageManager.Stub {
         }
         // reader
         synchronized (mPackages) {
-            final SharedUserSetting suid = mSettings.getSharedUserLPw(sharedUserName, 0, false);
+            final SharedUserSetting suid = mSettings.getSharedUserLPw(sharedUserName, 0, 0, false);
             if (suid == null) {
                 return -1;
             }
@@ -2985,6 +2986,21 @@ public class PackageManagerService extends IPackageManager.Stub {
             } else if (obj instanceof PackageSetting) {
                 final PackageSetting ps = (PackageSetting) obj;
                 return ps.pkgFlags;
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public int getPrivateFlagsForUid(int uid) {
+        synchronized (mPackages) {
+            Object obj = mSettings.getUserIdLPr(UserHandle.getAppId(uid));
+            if (obj instanceof SharedUserSetting) {
+                final SharedUserSetting sus = (SharedUserSetting) obj;
+                return sus.pkgPrivateFlags;
+            } else if (obj instanceof PackageSetting) {
+                final PackageSetting ps = (PackageSetting) obj;
+                return ps.pkgPrivateFlags;
             }
         }
         return 0;
@@ -4310,9 +4326,9 @@ public class PackageManagerService extends IPackageManager.Stub {
             // If new package is not located in "/system/priv-app" (e.g. due to an OTA),
             // it needs to drop FLAG_PRIVILEGED.
             if (locationIsPrivileged(scanFile)) {
-                updatedPkg.pkgFlags |= ApplicationInfo.FLAG_PRIVILEGED;
+                updatedPkg.pkgPrivateFlags |= ApplicationInfo.PRIVATE_FLAG_PRIVILEGED;
             } else {
-                updatedPkg.pkgFlags &= ~ApplicationInfo.FLAG_PRIVILEGED;
+                updatedPkg.pkgPrivateFlags &= ~ApplicationInfo.PRIVATE_FLAG_PRIVILEGED;
             }
 
             if (ps != null && !ps.codePath.equals(scanFile)) {
@@ -4374,7 +4390,7 @@ public class PackageManagerService extends IPackageManager.Stub {
 
             // An updated privileged app will not have the PARSE_IS_PRIVILEGED
             // flag set initially
-            if ((updatedPkg.pkgFlags & ApplicationInfo.FLAG_PRIVILEGED) != 0) {
+            if ((updatedPkg.pkgPrivateFlags & ApplicationInfo.PRIVATE_FLAG_PRIVILEGED) != 0) {
                 parseFlags |= PackageParser.PARSE_IS_PRIVILEGED;
             }
         }
@@ -5314,7 +5330,7 @@ public class PackageManagerService extends IPackageManager.Stub {
         }
 
         if ((parseFlags&PackageParser.PARSE_IS_PRIVILEGED) != 0) {
-            pkg.applicationInfo.flags |= ApplicationInfo.FLAG_PRIVILEGED;
+            pkg.applicationInfo.privateFlags |= ApplicationInfo.PRIVATE_FLAG_PRIVILEGED;
         }
 
         if (mCustomResolverComponentName != null &&
@@ -5410,7 +5426,7 @@ public class PackageManagerService extends IPackageManager.Stub {
         // writer
         synchronized (mPackages) {
             if (pkg.mSharedUserId != null) {
-                suid = mSettings.getSharedUserLPw(pkg.mSharedUserId, 0, true);
+                suid = mSettings.getSharedUserLPw(pkg.mSharedUserId, 0, 0, true);
                 if (suid == null) {
                     throw new PackageManagerException(INSTALL_FAILED_INSUFFICIENT_STORAGE,
                             "Creating application package " + pkg.packageName
@@ -5484,7 +5500,8 @@ public class PackageManagerService extends IPackageManager.Stub {
                     destResourceFile, pkg.applicationInfo.nativeLibraryRootDir,
                     pkg.applicationInfo.primaryCpuAbi,
                     pkg.applicationInfo.secondaryCpuAbi,
-                    pkg.applicationInfo.flags, user, false);
+                    pkg.applicationInfo.flags, pkg.applicationInfo.privateFlags,
+                    user, false);
             if (pkgSetting == null) {
                 throw new PackageManagerException(INSTALL_FAILED_INSUFFICIENT_STORAGE,
                         "Creating application package " + pkg.packageName + " failed");
@@ -10379,7 +10396,8 @@ public class PackageManagerService extends IPackageManager.Stub {
         boolean disabledSystem = false;
         boolean updatedSettings = false;
         parseFlags |= PackageParser.PARSE_IS_SYSTEM;
-        if ((deletedPackage.applicationInfo.flags&ApplicationInfo.FLAG_PRIVILEGED) != 0) {
+        if ((deletedPackage.applicationInfo.privateFlags&ApplicationInfo.PRIVATE_FLAG_PRIVILEGED)
+                != 0) {
             parseFlags |= PackageParser.PARSE_IS_PRIVILEGED;
         }
         String packageName = deletedPackage.packageName;
@@ -10737,15 +10755,15 @@ public class PackageManagerService extends IPackageManager.Stub {
     }
 
     private static boolean isForwardLocked(PackageParser.Package pkg) {
-        return (pkg.applicationInfo.flags & ApplicationInfo.FLAG_FORWARD_LOCK) != 0;
+        return (pkg.applicationInfo.privateFlags & ApplicationInfo.PRIVATE_FLAG_FORWARD_LOCK) != 0;
     }
 
     private static boolean isForwardLocked(ApplicationInfo info) {
-        return (info.flags & ApplicationInfo.FLAG_FORWARD_LOCK) != 0;
+        return (info.privateFlags & ApplicationInfo.PRIVATE_FLAG_FORWARD_LOCK) != 0;
     }
 
     private boolean isForwardLocked(PackageSetting ps) {
-        return (ps.pkgFlags & ApplicationInfo.FLAG_FORWARD_LOCK) != 0;
+        return (ps.pkgPrivateFlags & ApplicationInfo.PRIVATE_FLAG_FORWARD_LOCK) != 0;
     }
 
     private static boolean isMultiArch(PackageSetting ps) {
@@ -10773,7 +10791,7 @@ public class PackageManagerService extends IPackageManager.Stub {
     }
 
     private static boolean isPrivilegedApp(PackageParser.Package pkg) {
-        return (pkg.applicationInfo.flags & ApplicationInfo.FLAG_PRIVILEGED) != 0;
+        return (pkg.applicationInfo.privateFlags & ApplicationInfo.PRIVATE_FLAG_PRIVILEGED) != 0;
     }
 
     private static boolean isSystemApp(ApplicationInfo info) {
