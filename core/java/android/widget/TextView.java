@@ -108,6 +108,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewAssistData;
 import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewGroup.LayoutParams;
@@ -8404,12 +8405,26 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
                 UserHandle.USER_CURRENT_OR_SELF) == 1);
     }
 
+    @Override
+    public CharSequence getAccessibilityClassName() {
+        return TextView.class.getName();
+    }
+
+    @Override
+    public void onProvideAssistData(ViewAssistData data, Bundle extras) {
+        super.onProvideAssistData(data, extras);
+        final boolean isPassword = hasPasswordTransformationMethod();
+        if (!isPassword) {
+            data.setText(getText(), getSelectionStart(), getSelectionEnd());
+        }
+        data.setHint(getHint());
+    }
+
     /** @hide */
     @Override
     public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
         super.onInitializeAccessibilityEventInternal(event);
 
-        event.setClassName(TextView.class.getName());
         final boolean isPassword = hasPasswordTransformationMethod();
         event.setPassword(isPassword);
 
@@ -8425,7 +8440,6 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
     public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfoInternal(info);
 
-        info.setClassName(TextView.class.getName());
         final boolean isPassword = hasPasswordTransformationMethod();
         info.setPassword(isPassword);
 
