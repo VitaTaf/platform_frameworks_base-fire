@@ -17128,6 +17128,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @param id The id to search for.
      * @return The view that has the given id in the hierarchy or null
      */
+    @Nullable
     public final View findViewById(int id) {
         if (id < 0) {
             return null;
