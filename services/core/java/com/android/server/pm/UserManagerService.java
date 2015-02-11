@@ -901,6 +901,7 @@ public class UserManagerService extends IUserManager.Stub {
         writeBoolean(serializer, restrictions, UserManager.DISALLOW_CREATE_WINDOWS);
         writeBoolean(serializer, restrictions, UserManager.DISALLOW_CROSS_PROFILE_COPY_PASTE);
         writeBoolean(serializer, restrictions, UserManager.DISALLOW_OUTGOING_BEAM);
+        writeBoolean(serializer, restrictions, UserManager.DISALLOW_WALLPAPER);
         serializer.endTag(null, TAG_RESTRICTIONS);
     }
 
@@ -1053,6 +1054,7 @@ public class UserManagerService extends IUserManager.Stub {
         readBoolean(parser, restrictions, UserManager.DISALLOW_CREATE_WINDOWS);
         readBoolean(parser, restrictions, UserManager.DISALLOW_CROSS_PROFILE_COPY_PASTE);
         readBoolean(parser, restrictions, UserManager.DISALLOW_OUTGOING_BEAM);
+        readBoolean(parser, restrictions, UserManager.DISALLOW_WALLPAPER);
     }
 
     private void readBoolean(XmlPullParser parser, Bundle restrictions,
