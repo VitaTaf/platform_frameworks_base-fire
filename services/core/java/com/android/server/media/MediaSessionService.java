@@ -744,6 +744,11 @@ public class MediaSessionService extends SystemService implements Monitor {
             final int pid = Binder.getCallingPid();
             final int uid = Binder.getCallingUid();
             final long token = Binder.clearCallingIdentity();
+            if (DEBUG) {
+                Log.d(TAG, "dispatchMediaKeyEvent, pid=" + pid + ", uid=" + uid + ", event="
+                        + keyEvent);
+            }
+
             try {
                 if (!isUserSetupComplete()) {
                     // Global media key handling can have the side-effect of starting new
