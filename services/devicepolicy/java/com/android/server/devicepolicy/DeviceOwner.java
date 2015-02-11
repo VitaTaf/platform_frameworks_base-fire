@@ -51,6 +51,7 @@ class DeviceOwner {
 
     private static final String DEVICE_OWNER_XML = "device_owner.xml";
     private static final String TAG_DEVICE_OWNER = "device-owner";
+    private static final String TAG_DEVICE_INITIALIZER = "device-initializer";
     private static final String TAG_PROFILE_OWNER = "profile-owner";
     private static final String ATTR_NAME = "name";
     private static final String ATTR_PACKAGE = "package";
@@ -65,6 +66,9 @@ class DeviceOwner {
 
     // Internal state for the device owner package.
     private OwnerInfo mDeviceOwner;
+
+    // Internal state for the device initializer package.
+    private OwnerInfo mDeviceInitializer;
 
     // Internal state for the profile owner packages.
     private final HashMap<Integer, OwnerInfo> mProfileOwners = new HashMap<Integer, OwnerInfo>();
@@ -102,6 +106,15 @@ class DeviceOwner {
     }
 
     /**
+     * Creates an instance of the device owner object with the device initializer set.
+     */
+    static DeviceOwner createWithDeviceInitializer(String packageName, String ownerName) {
+        DeviceOwner owner = new DeviceOwner();
+        owner.mDeviceInitializer = new OwnerInfo(ownerName, packageName);
+        return owner;
+    }
+
+    /**
      * Creates an instance of the device owner object with the profile owner set.
      */
     static DeviceOwner createWithProfileOwner(ComponentName admin, String ownerName, int userId) {
@@ -124,6 +137,26 @@ class DeviceOwner {
 
     void clearDeviceOwner() {
         mDeviceOwner = null;
+    }
+
+    String getDeviceInitializerPackageName() {
+        return mDeviceInitializer != null ? mDeviceInitializer.packageName : null;
+    }
+
+    String getDeviceInitializerName() {
+        return mDeviceInitializer != null ? mDeviceInitializer.name : null;
+    }
+
+    void setDeviceInitializer(String packageName, String ownerName) {
+        mDeviceInitializer = new OwnerInfo(ownerName, packageName);
+    }
+
+    void clearDeviceInitializer() {
+        mDeviceInitializer = null;
+    }
+
+    boolean hasDeviceInitializer() {
+        return mDeviceInitializer != null;
     }
 
     void setProfileOwner(ComponentName admin, String ownerName, int userId) {
@@ -197,6 +230,10 @@ class DeviceOwner {
                     String name = parser.getAttributeValue(null, ATTR_NAME);
                     String packageName = parser.getAttributeValue(null, ATTR_PACKAGE);
                     mDeviceOwner = new OwnerInfo(name, packageName);
+                } else if (tag.equals(TAG_DEVICE_INITIALIZER)) {
+                    String name = parser.getAttributeValue(null, ATTR_NAME);
+                    String packageName = parser.getAttributeValue(null, ATTR_PACKAGE);
+                    mDeviceInitializer = new OwnerInfo(name, packageName);
                 } else if (tag.equals(TAG_PROFILE_OWNER)) {
                     String profileOwnerPackageName = parser.getAttributeValue(null, ATTR_PACKAGE);
                     String profileOwnerName = parser.getAttributeValue(null, ATTR_NAME);
@@ -255,6 +292,16 @@ class DeviceOwner {
                     out.attribute(null, ATTR_NAME, mDeviceOwner.name);
                 }
                 out.endTag(null, TAG_DEVICE_OWNER);
+            }
+
+            // Write device initializer tag
+            if (mDeviceInitializer != null) {
+                out.startTag(null, TAG_DEVICE_INITIALIZER);
+                out.attribute(null, ATTR_PACKAGE, mDeviceInitializer.packageName);
+                if (mDeviceInitializer.name != null) {
+                    out.attribute(null, ATTR_NAME, mDeviceInitializer.name);
+                }
+                out.endTag(null, TAG_DEVICE_INITIALIZER);
             }
 
             // Write profile owner tags
