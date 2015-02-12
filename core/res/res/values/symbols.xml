@@ -2165,6 +2165,9 @@
   <java-symbol type="bool" name="config_LTE_eri_for_network_name" />
   <java-symbol type="bool" name="config_defaultInTouchMode" />
 
+  <java-symbol type="bool" name="allow_stacked_button_bar" />
+  <java-symbol type="id" name="spacer" />
   <java-symbol type="integer" name="config_screen_magnification_multi_tap_adjustment" />
   <java-symbol type="dimen" name="config_screen_magnification_scaling_threshold" />
+
 </resources>
