@@ -182,6 +182,7 @@ public class AudioService extends IAudioService.Stub {
 
     /** The controller for the volume UI. */
     private final VolumeController mVolumeController = new VolumeController();
+    private final ControllerService mControllerService = new ControllerService();
 
     // sendMsg() flags
     /** If the msg is already queued, replace it with this one. */
@@ -693,6 +694,7 @@ public class AudioService extends IAudioService.Stub {
                 SAFE_VOLUME_CONFIGURE_TIMEOUT_MS);
 
         StreamOverride.init(mContext);
+        mControllerService.init();
     }
 
     private void createAudioSystemThread() {
@@ -1824,7 +1826,7 @@ public class AudioService extends IAudioService.Stub {
     }
 
     public void setRingerModeInternal(int ringerMode, String caller) {
-        enforceSelfOrSystemUI("setRingerModeInternal");
+        enforceVolumeController("setRingerModeInternal");
         setRingerMode(ringerMode, caller, false /*external*/);
     }
 
@@ -4954,7 +4956,7 @@ public class AudioService extends IAudioService.Stub {
 
     @Override
     public void setRemoteStreamVolume(int index) {
-        enforceSelfOrSystemUI("set the remote stream volume");
+        enforceVolumeController("set the remote stream volume");
         mMediaFocusControl.setRemoteStreamVolume(index);
     }
 
@@ -5250,7 +5252,7 @@ public class AudioService extends IAudioService.Stub {
 
     @Override
     public void disableSafeMediaVolume() {
-        enforceSelfOrSystemUI("disable the safe media volume");
+        enforceVolumeController("disable the safe media volume");
         synchronized (mSafeMediaVolumeState) {
             setSafeMediaVolumeEnabled(false);
             if (mPendingVolumeCommand != null) {
@@ -5422,6 +5424,7 @@ public class AudioService extends IAudioService.Stub {
         pw.print("  mMusicActiveMs="); pw.println(mMusicActiveMs);
         pw.print("  mMcc="); pw.println(mMcc);
         pw.print("  mHasVibrator="); pw.println(mHasVibrator);
+        pw.print("  mControllerService="); pw.println(mControllerService);
 
         dumpAudioPolicies(pw);
     }
@@ -5445,14 +5448,17 @@ public class AudioService extends IAudioService.Stub {
         }
     }
 
-    private void enforceSelfOrSystemUI(String action) {
+    private void enforceVolumeController(String action) {
+        if (mControllerService.mUid != 0 && Binder.getCallingUid() == mControllerService.mUid) {
+            return;
+        }
         mContext.enforceCallingOrSelfPermission(android.Manifest.permission.STATUS_BAR_SERVICE,
                 "Only SystemUI can " + action);
     }
 
     @Override
     public void setVolumeController(final IVolumeController controller) {
-        enforceSelfOrSystemUI("set the volume controller");
+        enforceVolumeController("set the volume controller");
 
         // return early if things are not actually changing
         if (mVolumeController.isSameBinder(controller)) {
@@ -5483,7 +5489,7 @@ public class AudioService extends IAudioService.Stub {
 
     @Override
     public void notifyVolumeControllerVisible(final IVolumeController controller, boolean visible) {
-        enforceSelfOrSystemUI("notify about volume controller visibility");
+        enforceVolumeController("notify about volume controller visibility");
 
         // return early if the controller is not current
         if (!mVolumeController.isSameBinder(controller)) {
@@ -5668,6 +5674,11 @@ public class AudioService extends IAudioService.Stub {
         public void setRingerModeInternal(int ringerMode, String caller) {
             AudioService.this.setRingerModeInternal(ringerMode, caller);
         }
+
+        @Override
+        public int getVolumeControllerUid() {
+            return mControllerService.mUid;
+        }
     }
 
     //==========================================================================================
@@ -5832,4 +5843,42 @@ public class AudioService extends IAudioService.Stub {
     private HashMap<IBinder, AudioPolicyProxy> mAudioPolicies =
             new HashMap<IBinder, AudioPolicyProxy>();
     private int mAudioPolicyCounter = 0; // always accessed synchronized on mAudioPolicies
+
+    private class ControllerService extends ContentObserver {
+        private int mUid;
+        private ComponentName mComponent;
+
+        public ControllerService() {
+            super(null);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("{mUid=%d,mComponent=%s}", mUid, mComponent);
+        }
+
+        public void init() {
+            onChange(true);
+            mContentResolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.Secure.VOLUME_CONTROLLER_SERVICE_COMPONENT), false, this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            mUid = 0;
+            mComponent = null;
+            final String setting = Settings.Secure.getString(mContentResolver,
+                    Settings.Secure.VOLUME_CONTROLLER_SERVICE_COMPONENT);
+            if (setting == null) return;
+            try {
+                mComponent = ComponentName.unflattenFromString(setting);
+                if (mComponent == null) return;
+                mUid = mContext.getPackageManager()
+                        .getApplicationInfo(mComponent.getPackageName(), 0).uid;
+            } catch (Exception e) {
+                Log.w(TAG, "Error loading controller service", e);
+            }
+            if (DEBUG_VOL) Log.d(TAG, "Reloaded controller service: " + this);
+        }
+    }
 }
