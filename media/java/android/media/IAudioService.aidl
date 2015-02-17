@@ -195,6 +195,8 @@ interface IAudioService {
 
     boolean isStreamAffectedByRingerMode(int streamType);
 
+    boolean isStreamAffectedByMute(int streamType);
+
     void disableSafeMediaVolume();
 
     int setHdmiSystemAudioSupported(boolean on);
