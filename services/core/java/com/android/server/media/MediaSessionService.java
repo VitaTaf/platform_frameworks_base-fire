@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
 import android.media.AudioManager;
+import android.media.AudioManagerInternal;
 import android.media.AudioSystem;
 import android.media.IAudioService;
 import android.media.IRemoteVolumeController;
@@ -60,6 +61,7 @@ import android.util.Slog;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 
+import com.android.server.LocalServices;
 import com.android.server.SystemService;
 import com.android.server.Watchdog;
 import com.android.server.Watchdog.Monitor;
@@ -95,6 +97,7 @@ public class MediaSessionService extends SystemService implements Monitor {
     private KeyguardManager mKeyguardManager;
     private IAudioService mAudioService;
     private AudioManager mAudioManager;
+    private AudioManagerInternal mAudioManagerInternal;
     private ContentResolver mContentResolver;
     private SettingsObserver mSettingsObserver;
 
@@ -122,6 +125,7 @@ public class MediaSessionService extends SystemService implements Monitor {
                 (KeyguardManager) getContext().getSystemService(Context.KEYGUARD_SERVICE);
         mAudioService = getAudioService();
         mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+        mAudioManagerInternal = LocalServices.getService(AudioManagerInternal.class);
         mContentResolver = getContext().getContentResolver();
         mSettingsObserver = new SettingsObserver();
         mSettingsObserver.observe();
@@ -344,7 +348,13 @@ public class MediaSessionService extends SystemService implements Monitor {
         }
     }
 
-    private void enforceStatusBarPermission(String action, int pid, int uid) {
+    private void enforceSystemUiPermission(String action, int pid, int uid) {
+        if (mAudioManagerInternal != null) {
+            final int vcuid = mAudioManagerInternal.getVolumeControllerUid();
+            if (vcuid > 0 && uid == vcuid) {
+                return;
+            }
+        }
         if (getContext().checkPermission(android.Manifest.permission.STATUS_BAR_SERVICE,
                 pid, uid) != PackageManager.PERMISSION_GRANTED) {
             throw new SecurityException("Only system ui may " + action);
@@ -799,7 +809,7 @@ public class MediaSessionService extends SystemService implements Monitor {
             final int uid = Binder.getCallingUid();
             final long token = Binder.clearCallingIdentity();
             try {
-                enforceStatusBarPermission("listen for volume changes", pid, uid);
+                enforceSystemUiPermission("listen for volume changes", pid, uid);
                 mRvc = rvc;
             } finally {
                 Binder.restoreCallingIdentity(token);
