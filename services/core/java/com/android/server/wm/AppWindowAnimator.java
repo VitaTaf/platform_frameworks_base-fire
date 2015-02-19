@@ -147,6 +147,10 @@ public class AppWindowAnimator {
         }
     }
 
+    public boolean isAnimating() {
+        return animation != null || mAppToken.inPendingTransaction;
+    }
+
     public void clearThumbnail() {
         if (thumbnail != null) {
             thumbnail.destroy();
