@@ -251,6 +251,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     Vibrator mVibrator; // Vibrator for giving feedback of orientation changes
     SearchManager mSearchManager;
     AccessibilityManager mAccessibilityManager;
+    BurnInProtectionHelper mBurnInProtectionHelper;
 
     // Vibrator pattern for haptic feedback of a long press.
     long[] mLongPressVibePattern;
@@ -1179,6 +1180,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mWindowManagerFuncs = windowManagerFuncs;
         mWindowManagerInternal = LocalServices.getService(WindowManagerInternal.class);
         mDreamManagerInternal = LocalServices.getService(DreamManagerInternal.class);
+        if (context.getResources().getBoolean(
+                com.android.internal.R.bool.config_enableBurnInProtection)){
+            mBurnInProtectionHelper = new BurnInProtectionHelper(context);
+        }
 
         mHandler = new PolicyHandler();
         mWakeGestureListener = new MyWakeGestureListener(mContext, mHandler);
@@ -6380,6 +6385,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
         if (mOrientationListener != null) {
             mOrientationListener.dump(pw, prefix);
+        }
+        if (mBurnInProtectionHelper != null) {
+            mBurnInProtectionHelper.dump(prefix, pw);
         }
     }
 }
