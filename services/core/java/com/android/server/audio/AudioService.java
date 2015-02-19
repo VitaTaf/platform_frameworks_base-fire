@@ -561,8 +561,7 @@ public class AudioService extends IAudioService.Stub {
 
         AudioSystem.setErrorCallback(mAudioSystemCallback);
 
-        boolean cameraSoundForced = mContext.getResources().getBoolean(
-                com.android.internal.R.bool.config_camera_sound_forced);
+        boolean cameraSoundForced = readCameraSoundForced();
         mCameraSoundForced = new Boolean(cameraSoundForced);
         sendMsg(mAudioHandler,
                 MSG_SET_FORCE_USE,
@@ -4871,6 +4870,12 @@ public class AudioService extends IAudioService.Stub {
         return mMediaFocusControl.getCurrentAudioFocus();
     }
 
+    private boolean readCameraSoundForced() {
+        return SystemProperties.getBoolean("audio.camerasound.force", false) ||
+                mContext.getResources().getBoolean(
+                        com.android.internal.R.bool.config_camera_sound_forced);
+    }
+
     //==========================================================================================
     // Device orientation
     //==========================================================================================
@@ -4901,8 +4906,7 @@ public class AudioService extends IAudioService.Stub {
                     TAG,
                     0);
 
-            boolean cameraSoundForced = mContext.getResources().getBoolean(
-                    com.android.internal.R.bool.config_camera_sound_forced);
+            boolean cameraSoundForced = readCameraSoundForced();
             synchronized (mSettingsLock) {
                 boolean cameraSoundForcedChanged = false;
                 synchronized (mCameraSoundForced) {
@@ -5294,6 +5298,7 @@ public class AudioService extends IAudioService.Stub {
         pw.print("  mPendingVolumeCommand="); pw.println(mPendingVolumeCommand);
         pw.print("  mMusicActiveMs="); pw.println(mMusicActiveMs);
         pw.print("  mMcc="); pw.println(mMcc);
+        pw.print("  mCameraSoundForced="); pw.println(mCameraSoundForced);
         pw.print("  mHasVibrator="); pw.println(mHasVibrator);
         pw.print("  mControllerService="); pw.println(mControllerService);
         pw.print("  mVolumePolicy="); pw.println(mVolumePolicy);
