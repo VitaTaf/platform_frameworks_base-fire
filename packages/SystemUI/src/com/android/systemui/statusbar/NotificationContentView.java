@@ -52,7 +52,7 @@ public class NotificationContentView extends FrameLayout {
 
     private int mSmallHeight;
     private int mClipTopAmount;
-    private int mActualHeight;
+    private int mContentHeight;
 
     private final Interpolator mLinearInterpolator = new LinearInterpolator();
 
@@ -102,7 +102,7 @@ public class NotificationContentView extends FrameLayout {
         mSmallHeight = getResources().getDimensionPixelSize(R.dimen.notification_min_height);
         mContractedVisible = true;
         if (resetActualHeight) {
-            mActualHeight = mSmallHeight;
+            mContentHeight = mSmallHeight;
         }
     }
 
@@ -159,10 +159,15 @@ public class NotificationContentView extends FrameLayout {
         }
     }
 
-    public void setActualHeight(int actualHeight) {
-        mActualHeight = actualHeight;
+    public void setContentHeight(int contentHeight) {
+        contentHeight = Math.max(Math.min(contentHeight, getHeight()), getMinHeight());
+        mContentHeight = contentHeight;
         selectLayout(mAnimate /* animate */, false /* force */);
         updateClipping();
+    }
+
+    public int getContentHeight() {
+        return mContentHeight;
     }
 
     public int getMaxHeight() {
@@ -181,7 +186,7 @@ public class NotificationContentView extends FrameLayout {
     }
 
     private void updateClipping() {
-        mClipBounds.set(0, mClipTopAmount, getWidth(), mActualHeight);
+        mClipBounds.set(0, mClipTopAmount, getWidth(), mContentHeight);
         setClipBounds(mClipBounds);
     }
 
@@ -240,7 +245,7 @@ public class NotificationContentView extends FrameLayout {
     }
 
     private boolean showContractedChild() {
-        return mActualHeight <= mSmallHeight || mExpandedChild == null;
+        return mContentHeight <= mSmallHeight || mExpandedChild == null;
     }
 
     public void notifyContentUpdated() {
