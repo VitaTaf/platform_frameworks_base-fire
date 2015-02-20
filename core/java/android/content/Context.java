@@ -2959,7 +2959,7 @@ public abstract class Context {
 
     /**
      * Use with {@link #getSystemService} to retrieve a
-     * {@link android.midi.MidiManager} for accessing the MIDI service.
+     * {@link android.media.midi.MidiManager} for accessing the MIDI service.
      *
      * @see #getSystemService
      * @hide
