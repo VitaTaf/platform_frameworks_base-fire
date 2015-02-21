@@ -389,8 +389,8 @@ public final class ActivityStackSupervisor implements DisplayListener {
         return mLastFocusedStack;
     }
 
-    // TODO: Split into two methods isFrontStack for any visible stack and isFrontmostStack for the
-    // top of all visible stacks.
+    /** Top of all visible stacks. Use {@link ActivityStack#isStackVisibleLocked} to determine if a
+     * specific stack is visible or not. */
     boolean isFrontStack(ActivityStack stack) {
         final ActivityRecord parent = stack.mActivityContainer.mParentActivity;
         if (parent != null) {
@@ -524,7 +524,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
     }
 
     ActivityRecord resumedAppLocked() {
-        ActivityStack stack = getFocusedStack();
+        ActivityStack stack = mFocusedStack;
         if (stack == null) {
             return null;
         }
@@ -728,7 +728,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
     }
 
     ActivityRecord topRunningActivityLocked() {
-        final ActivityStack focusedStack = getFocusedStack();
+        final ActivityStack focusedStack = mFocusedStack;
         ActivityRecord r = focusedStack.topRunningActivityLocked(null);
         if (r != null) {
             return r;
@@ -874,7 +874,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
 
             final ActivityStack stack;
             if (container == null || container.mStack.isOnHomeDisplay()) {
-                stack = getFocusedStack();
+                stack = mFocusedStack;
             } else {
                 stack = container.mStack;
             }
@@ -1494,7 +1494,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
             outActivity[0] = r;
         }
 
-        final ActivityStack stack = getFocusedStack();
+        final ActivityStack stack = mFocusedStack;
         if (voiceSession == null && (stack.mResumedActivity == null
                 || stack.mResumedActivity.info.applicationInfo.uid != callingUid)) {
             if (!mService.checkAppSwitchAllowedLocked(callingPid, callingUid,
@@ -1698,7 +1698,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
         if ((startFlags&ActivityManager.START_FLAG_ONLY_IF_NEEDED) != 0) {
             ActivityRecord checkedCaller = sourceRecord;
             if (checkedCaller == null) {
-                checkedCaller = getFocusedStack().topRunningNonDelayedActivityLocked(notTop);
+                checkedCaller = mFocusedStack.topRunningNonDelayedActivityLocked(notTop);
             }
             if (!checkedCaller.realActivity.equals(r.realActivity)) {
                 // Caller is not the same as launcher, so always needed.
@@ -2021,7 +2021,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
             // If the activity being launched is the same as the one currently
             // at the top, then we need to check if it should only be launched
             // once.
-            ActivityStack topStack = getFocusedStack();
+            ActivityStack topStack = mFocusedStack;
             ActivityRecord top = topStack.topRunningNonDelayedActivityLocked(notTop);
             if (top != null && r.resultTo == null) {
                 if (top.realActivity.equals(r.realActivity) && top.userId == r.userId) {
@@ -2472,13 +2472,14 @@ public final class ActivityStackSupervisor implements DisplayListener {
     boolean resumeTopActivitiesLocked(ActivityStack targetStack, ActivityRecord target,
             Bundle targetOptions) {
         if (targetStack == null) {
-            targetStack = getFocusedStack();
+            targetStack = mFocusedStack;
         }
         // Do targetStack first.
         boolean result = false;
         if (isFrontStack(targetStack)) {
             result = targetStack.resumeTopActivityLocked(target, targetOptions);
         }
+
         for (int displayNdx = mActivityDisplays.size() - 1; displayNdx >= 0; --displayNdx) {
             final ArrayList<ActivityStack> stacks = mActivityDisplays.valueAt(displayNdx).mStacks;
             for (int stackNdx = stacks.size() - 1; stackNdx >= 0; --stackNdx) {
@@ -3104,7 +3105,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
     }
 
     boolean switchUserLocked(int userId, UserStartedState uss) {
-        mUserStackInFront.put(mCurrentUser, getFocusedStack().getStackId());
+        mUserStackInFront.put(mCurrentUser, mFocusedStack.getStackId());
         final int restoreStackId = mUserStackInFront.get(userId, HOME_STACK_ID);
         mCurrentUser = userId;
 
@@ -3228,7 +3229,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
     }
 
     ArrayList<ActivityRecord> getDumpActivitiesLocked(String name) {
-        return getFocusedStack().getDumpActivitiesLocked(name);
+        return mFocusedStack.getDumpActivitiesLocked(name);
     }
 
     static boolean printThisActivity(PrintWriter pw, ActivityRecord activity, String dumpPackage,
