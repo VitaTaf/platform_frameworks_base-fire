@@ -51,6 +51,19 @@ class Task {
         mDeferRemoval = false;
     }
 
+    void moveTaskToStack(TaskStack stack, boolean toTop) {
+        if (stack == mStack) {
+            return;
+        }
+        if (DEBUG_STACK) Slog.i(TAG, "moveTaskToStack: removing taskId=" + mTaskId
+                + " from stack=" + mStack);
+        EventLog.writeEvent(EventLogTags.WM_TASK_REMOVED, mTaskId, "removeTask");
+        if (mStack != null) {
+            mStack.removeTask(this);
+        }
+        stack.addTask(this, toTop);
+    }
+
     boolean removeAppToken(AppWindowToken wtoken) {
         boolean removed = mAppTokens.remove(wtoken);
         if (mAppTokens.size() == 0) {
