@@ -2353,8 +2353,7 @@ public final class ActivityManagerService extends ActivityManagerNative
             } else {
                 finishRunningVoiceLocked();
             }
-            mStackSupervisor.setFocusedStack(r, reason + " setFocusedActivity");
-            if (r != null) {
+            if (r != null && mStackSupervisor.setFocusedStack(r, reason + " setFocusedActivity")) {
                 mWindowManager.setFocusedApp(r.appToken, true);
             }
             applyUpdateLockStateLocked(r);
@@ -2378,6 +2377,7 @@ public final class ActivityManagerService extends ActivityManagerNative
                 ActivityRecord r = stack.topRunningActivityLocked(null);
                 if (r != null) {
                     setFocusedActivityLocked(r, "setFocusedStack");
+                    mStackSupervisor.resumeTopActivitiesLocked(stack, null, null);
                 }
             }
         }
