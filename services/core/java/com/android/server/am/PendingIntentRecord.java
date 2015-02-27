@@ -32,6 +32,8 @@ import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Slog;
 
+import com.android.server.am.ActivityStackSupervisor.ActivityContainer;
+
 import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
 
@@ -206,6 +208,13 @@ final class PendingIntentRecord extends IIntentSender.Stub {
             IBinder resultTo, String resultWho, int requestCode,
             int flagsMask, int flagsValues, Bundle options, IActivityContainer container) {
         synchronized(owner) {
+            final ActivityContainer activityContainer = (ActivityContainer)container;
+            if (activityContainer != null && activityContainer.mParentActivity != null &&
+                    activityContainer.mParentActivity.state
+                            != ActivityStack.ActivityState.RESUMED) {
+                // Cannot start a child activity if the parent is not resumed.
+                return ActivityManager.START_CANCELED;
+            }
             if (!canceled) {
                 sent = true;
                 if ((key.flags&PendingIntent.FLAG_ONE_SHOT) != 0) {
