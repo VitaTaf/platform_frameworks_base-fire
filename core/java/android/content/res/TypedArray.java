@@ -17,6 +17,7 @@
 package android.content.res;
 
 import android.annotation.AnyRes;
+import android.annotation.ColorInt;
 import android.annotation.Nullable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -377,7 +378,8 @@ public class TypedArray {
      *
      * @return Attribute color value, or defValue if not defined.
      */
-    public int getColor(int index, int defValue) {
+    @ColorInt
+    public int getColor(int index, @ColorInt int defValue) {
         if (mRecycled) {
             throw new RuntimeException("Cannot make calls to a recycled instance!");
         }
