@@ -16,6 +16,7 @@
 
 package android.content;
 
+import android.annotation.CheckResult;
 import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
@@ -3029,6 +3030,7 @@ public abstract class Context {
      * @see PackageManager#checkPermission(String, String)
      * @see #checkCallingPermission
      */
+    @CheckResult(suggest="#enforcePermission(String,int,int,String)")
     @PackageManager.PermissionResult
     public abstract int checkPermission(@NonNull String permission, int pid, int uid);
 
@@ -3058,6 +3060,7 @@ public abstract class Context {
      * @see #checkPermission
      * @see #checkCallingOrSelfPermission
      */
+    @CheckResult(suggest="#enforceCallingPermission(String,String)")
     @PackageManager.PermissionResult
     public abstract int checkCallingPermission(@NonNull String permission);
 
@@ -3077,6 +3080,7 @@ public abstract class Context {
      * @see #checkPermission
      * @see #checkCallingPermission
      */
+    @CheckResult(suggest="#enforceCallingOrSelfPermission(String,String)")
     @PackageManager.PermissionResult
     public abstract int checkCallingOrSelfPermission(@NonNull String permission);
 
@@ -3221,6 +3225,7 @@ public abstract class Context {
      *
      * @see #checkCallingUriPermission
      */
+    @CheckResult(suggest="#enforceUriPermission(Uri,int,int,String)")
     public abstract int checkUriPermission(Uri uri, int pid, int uid,
             @Intent.AccessUriMode int modeFlags);
 
@@ -3249,6 +3254,7 @@ public abstract class Context {
      *
      * @see #checkUriPermission(Uri, int, int, int)
      */
+    @CheckResult(suggest="#enforceCallingUriPermission(Uri,int,String)")
     public abstract int checkCallingUriPermission(Uri uri, @Intent.AccessUriMode int modeFlags);
 
     /**
@@ -3268,6 +3274,7 @@ public abstract class Context {
      *
      * @see #checkCallingUriPermission
      */
+    @CheckResult(suggest="#enforceCallingOrSelfUriPermission(Uri,int,String)")
     public abstract int checkCallingOrSelfUriPermission(Uri uri,
             @Intent.AccessUriMode int modeFlags);
 
@@ -3293,6 +3300,7 @@ public abstract class Context {
      * is allowed to access that uri or holds one of the given permissions, or
      * {@link PackageManager#PERMISSION_DENIED} if it is not.
      */
+    @CheckResult(suggest="#enforceUriPermission(Uri,String,String,int,int,int,String)")
     public abstract int checkUriPermission(@Nullable Uri uri, @Nullable String readPermission,
             @Nullable String writePermission, int pid, int uid,
             @Intent.AccessUriMode int modeFlags);

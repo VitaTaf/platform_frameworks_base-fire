@@ -16,6 +16,7 @@
 
 package android.graphics;
 
+import android.annotation.CheckResult;
 import android.annotation.ColorInt;
 import android.annotation.NonNull;
 import android.os.Parcel;
@@ -1508,6 +1509,7 @@ public final class Bitmap implements Parcelable {
      *
      * @return new bitmap containing the alpha channel of the original bitmap.
      */
+    @CheckResult
     public Bitmap extractAlpha() {
         return extractAlpha(null, null);
     }
@@ -1537,6 +1539,7 @@ public final class Bitmap implements Parcelable {
      *         Canvas.drawBitmap(), where the color(s) will be taken from the
      *         paint that is passed to the draw call.
      */
+    @CheckResult
     public Bitmap extractAlpha(Paint paint, int[] offsetXY) {
         checkRecycled("Can't extractAlpha on a recycled bitmap");
         long nativePaint = paint != null ? paint.mNativePaint : 0;
