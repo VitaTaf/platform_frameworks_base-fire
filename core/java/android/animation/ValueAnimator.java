@@ -16,7 +16,7 @@
 
 package android.animation;
 
-import android.content.res.ConfigurationBoundResourceCache;
+import android.annotation.CallSuper;
 import android.os.Looper;
 import android.os.Trace;
 import android.util.AndroidRuntimeException;
@@ -492,6 +492,7 @@ public class ValueAnimator extends Animator {
      *  <p>Overrides of this method should call the superclass method to ensure
      *  that internal mechanisms for the animation are set up correctly.</p>
      */
+    @CallSuper
     void initAnimation() {
         if (!mInitialized) {
             int numValues = mValues.length;
@@ -1361,6 +1362,7 @@ public class ValueAnimator extends Animator {
      *
      * @param fraction The elapsed fraction of the animation.
      */
+    @CallSuper
     void animateValue(float fraction) {
         fraction = mInterpolator.getInterpolation(fraction);
         mCurrentFraction = fraction;

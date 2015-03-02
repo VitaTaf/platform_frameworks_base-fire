@@ -18,6 +18,7 @@ package android.view;
 
 import android.animation.AnimatorInflater;
 import android.animation.StateListAnimator;
+import android.annotation.CallSuper;
 import android.annotation.ColorInt;
 import android.annotation.DrawableRes;
 import android.annotation.IdRes;
@@ -5213,6 +5214,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      *        passed in as finer grained information about where the focus is coming
      *        from (in addition to direction).  Will be <code>null</code> otherwise.
      */
+    @CallSuper
     protected void onFocusChanged(boolean gainFocus, @FocusDirection int direction,
             @Nullable Rect previouslyFocusedRect) {
         if (gainFocus) {
@@ -5435,6 +5437,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @see #sendAccessibilityEvent(int)
      * @see #dispatchPopulateAccessibilityEvent(AccessibilityEvent)
      */
+    @CallSuper
     public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
         if (mAccessibilityDelegate != null) {
             mAccessibilityDelegate.onPopulateAccessibilityEvent(this, event);
@@ -5479,6 +5482,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @see #sendAccessibilityEvent(int)
      * @see #dispatchPopulateAccessibilityEvent(AccessibilityEvent)
      */
+    @CallSuper
     public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
         if (mAccessibilityDelegate != null) {
             mAccessibilityDelegate.onInitializeAccessibilityEvent(this, event);
@@ -5593,6 +5597,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      *
      * @param info The instance to initialize.
      */
+    @CallSuper
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         if (mAccessibilityDelegate != null) {
             mAccessibilityDelegate.onInitializeAccessibilityNodeInfo(this, info);
@@ -6292,6 +6297,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      *
      * @hide pending API council approval
      */
+    @CallSuper
     protected void onFocusLost() {
         resetPressedState();
     }
@@ -13648,6 +13654,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      *
      * @hide
      */
+    @CallSuper
     protected void onDetachedFromWindowInternal() {
         mPrivateFlags &= ~PFLAG_CANCEL_NEXT_UP_EVENT;
         mPrivateFlags3 &= ~PFLAG3_IS_LAID_OUT;
@@ -14262,6 +14269,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      *
      * @hide
      */
+    @CallSuper
     protected void destroyHardwareResources() {
         // Although the Layer will be destroyed by RenderNode, we want to release
         // the staging display list, which is also a signal to RenderNode that it's
@@ -15469,6 +15477,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      *
      * @param canvas The Canvas to which the View is rendered.
      */
+    @CallSuper
     public void draw(Canvas canvas) {
         final int privateFlags = mPrivateFlags;
         final boolean dirtyOpaque = (privateFlags & PFLAG_DIRTY_MASK) == PFLAG_DIRTY_OPAQUE &&
@@ -16071,6 +16080,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * <p>Even if the subclass overrides onFinishInflate, they should always be
      * sure to call the super method, so that we get called.
      */
+    @CallSuper
     protected void onFinishInflate() {
     }
 
@@ -16236,6 +16246,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @see #unscheduleDrawable(android.graphics.drawable.Drawable)
      * @see #drawableStateChanged()
      */
+    @CallSuper
     protected boolean verifyDrawable(Drawable who) {
         return who == mBackground || (mScrollCache != null && mScrollCache.scrollBar == who);
     }
@@ -16251,6 +16262,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      *
      * @see Drawable#setState(int[])
      */
+    @CallSuper
     protected void drawableStateChanged() {
         final int[] state = getDrawableState();
 
@@ -16283,6 +16295,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @param x hotspot x coordinate
      * @param y hotspot y coordinate
      */
+    @CallSuper
     public void drawableHotspotChanged(float x, float y) {
         if (mBackground != null) {
             mBackground.setHotspot(x, y);
@@ -17753,6 +17766,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * <p>Subclasses which override this method should call the superclass method to
      * handle possible request-during-layout errors correctly.</p>
      */
+    @CallSuper
     public void requestLayout() {
         if (mMeasureCache != null) mMeasureCache.clear();
 
