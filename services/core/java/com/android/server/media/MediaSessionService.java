@@ -92,11 +92,9 @@ public class MediaSessionService extends SystemService implements Monitor {
     private final Object mLock = new Object();
     private final MessageHandler mHandler = new MessageHandler();
     private final PowerManager.WakeLock mMediaEventWakeLock;
-    private final boolean mUseMasterVolume;
 
     private KeyguardManager mKeyguardManager;
     private IAudioService mAudioService;
-    private AudioManager mAudioManager;
     private AudioManagerInternal mAudioManagerInternal;
     private ContentResolver mContentResolver;
     private SettingsObserver mSettingsObserver;
@@ -113,8 +111,6 @@ public class MediaSessionService extends SystemService implements Monitor {
         mPriorityStack = new MediaSessionStack();
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         mMediaEventWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "handleMediaEvent");
-        mUseMasterVolume = context.getResources().getBoolean(
-                com.android.internal.R.bool.config_useMasterVolume);
     }
 
     @Override
@@ -124,7 +120,6 @@ public class MediaSessionService extends SystemService implements Monitor {
         mKeyguardManager =
                 (KeyguardManager) getContext().getSystemService(Context.KEYGUARD_SERVICE);
         mAudioService = getAudioService();
-        mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
         mAudioManagerInternal = LocalServices.getService(AudioManagerInternal.class);
         mContentResolver = getContext().getContentResolver();
         mSettingsObserver = new SettingsObserver();
@@ -469,11 +464,6 @@ public class MediaSessionService extends SystemService implements Monitor {
             }
         }
         return -1;
-    }
-
-    private boolean isSessionDiscoverable(MediaSessionRecord record) {
-        // TODO probably want to check more than if it's active.
-        return record.isActive();
     }
 
     private void pushSessionsChanged(int userId) {
@@ -901,12 +891,8 @@ public class MediaSessionService extends SystemService implements Monitor {
                 }
                 try {
                     String packageName = getContext().getOpPackageName();
-                    if (mUseMasterVolume) {
-                            mAudioService.adjustMasterVolume(direction, flags, packageName);
-                    } else {
-                        mAudioService.adjustSuggestedStreamVolume(direction, suggestedStream,
-                                flags, packageName);
-                    }
+                    mAudioService.adjustSuggestedStreamVolume(direction, suggestedStream,
+                            flags, packageName);
                 } catch (RemoteException e) {
                     Log.e(TAG, "Error adjusting default volume.", e);
                 }
