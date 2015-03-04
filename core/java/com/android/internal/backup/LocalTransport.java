@@ -372,6 +372,9 @@ public class LocalTransport extends BackupTransport {
                 return TRANSPORT_ERROR;
             }
         }
+        if (DEBUG) {
+            Log.v(TAG, "   stored " + numBytes + " of data");
+        }
         return TRANSPORT_OK;
     }
 
@@ -434,6 +437,10 @@ public class LocalTransport extends BackupTransport {
 
     @Override
     public RestoreDescription nextRestorePackage() {
+        if (DEBUG) {
+            Log.v(TAG, "nextRestorePackage() : mRestorePackage=" + mRestorePackage
+                    + " length=" + mRestorePackages.length);
+        }
         if (mRestorePackages == null) throw new IllegalStateException("startRestore not called");
 
         boolean found = false;
@@ -444,7 +451,10 @@ public class LocalTransport extends BackupTransport {
             // skip packages where we have a data dir but no actual contents
             String[] contents = (new File(mRestoreSetIncrementalDir, name)).list();
             if (contents != null && contents.length > 0) {
-                if (DEBUG) Log.v(TAG, "  nextRestorePackage(TYPE_KEY_VALUE) = " + name);
+                if (DEBUG) {
+                    Log.v(TAG, "  nextRestorePackage(TYPE_KEY_VALUE) @ "
+                        + mRestorePackage + " = " + name);
+                }
                 mRestoreType = RestoreDescription.TYPE_KEY_VALUE;
                 found = true;
             }
@@ -453,7 +463,10 @@ public class LocalTransport extends BackupTransport {
                 // No key/value data; check for [non-empty] full data
                 File maybeFullData = new File(mRestoreSetFullDir, name);
                 if (maybeFullData.length() > 0) {
-                    if (DEBUG) Log.v(TAG, "  nextRestorePackage(TYPE_FULL_STREAM) = " + name);
+                    if (DEBUG) {
+                        Log.v(TAG, "  nextRestorePackage(TYPE_FULL_STREAM) @ "
+                                + mRestorePackage + " = " + name);
+                    }
                     mRestoreType = RestoreDescription.TYPE_FULL_STREAM;
                     mCurFullRestoreStream = null;   // ensure starting from the ground state
                     found = true;
@@ -462,6 +475,11 @@ public class LocalTransport extends BackupTransport {
 
             if (found) {
                 return new RestoreDescription(name, mRestoreType);
+            }
+
+            if (DEBUG) {
+                Log.v(TAG, "  ... package @ " + mRestorePackage + " = " + name
+                        + " has no data; skipping");
             }
         }
 
