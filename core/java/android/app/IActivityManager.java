@@ -484,6 +484,9 @@ public interface IActivityManager extends IInterface {
     public void setVoiceKeepAwake(IVoiceInteractionSession session, boolean keepAwake)
             throws RemoteException;
 
+    public void setDumpHeapDebugLimit(String processName, long maxMemSize) throws RemoteException;
+    public void dumpHeapFinished(String path) throws RemoteException;
+
     /*
      * Private non-Binder interfaces
      */
@@ -514,7 +517,7 @@ public interface IActivityManager extends IInterface {
                 dest.writeStrongBinder(null);
             }
             dest.writeStrongBinder(connection);
-            dest.writeInt(noReleaseNeeded ? 1:0);
+            dest.writeInt(noReleaseNeeded ? 1 : 0);
         }
 
         public static final Parcelable.Creator<ContentProviderHolder> CREATOR
@@ -533,7 +536,7 @@ public interface IActivityManager extends IInterface {
         private ContentProviderHolder(Parcel source) {
             info = ProviderInfo.CREATOR.createFromParcel(source);
             provider = ContentProviderNative.asInterface(
-                source.readStrongBinder());
+                    source.readStrongBinder());
             connection = source.readStrongBinder();
             noReleaseNeeded = source.readInt() != 0;
         }
@@ -814,5 +817,7 @@ public interface IActivityManager extends IInterface {
     int REQUEST_ASSIST_CONTEXT_EXTRAS_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+284;
     int RESIZE_TASK_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+285;
     int GET_LOCK_TASK_MODE_STATE_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+286;
+    int SET_DUMP_HEAP_DEBUG_LIMIT_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+287;
+    int DUMP_HEAP_FINISHED_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+288;
     int SET_VOICE_KEEP_AWAKE_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+289;
 }

@@ -20,6 +20,7 @@ import static com.android.server.am.ActivityManagerDebugConfig.TAG_AM;
 import static com.android.server.am.ActivityManagerDebugConfig.TAG_WITH_CLASS_NAME;
 
 import android.util.ArraySet;
+import android.util.DebugUtils;
 import android.util.EventLog;
 import android.util.Slog;
 import com.android.internal.app.ProcessStats;
@@ -253,8 +254,9 @@ final class ProcessRecord {
                 pw.println();
         pw.print(prefix); pw.print("adjSeq="); pw.print(adjSeq);
                 pw.print(" lruSeq="); pw.print(lruSeq);
-                pw.print(" lastPss="); pw.print(lastPss);
-                pw.print(" lastCachedPss="); pw.println(lastCachedPss);
+                pw.print(" lastPss="); DebugUtils.printSizeValue(pw, lastPss*1024);
+                pw.print(" lastCachedPss="); DebugUtils.printSizeValue(pw, lastCachedPss*1024);
+                pw.println();
         pw.print(prefix); pw.print("cached="); pw.print(cached);
                 pw.print(" empty="); pw.println(empty);
         if (serviceb) {
