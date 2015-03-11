@@ -1736,7 +1736,7 @@ public final class ActivityManagerService extends ActivityManagerNative
             }
             case ENTER_ANIMATION_COMPLETE_MSG: {
                 synchronized (ActivityManagerService.this) {
-                    ActivityRecord r = ActivityRecord.forToken((IBinder) msg.obj);
+                    ActivityRecord r = ActivityRecord.forTokenLocked((IBinder) msg.obj);
                     if (r != null && r.app != null && r.app.thread != null) {
                         try {
                             r.app.thread.scheduleEnterAnimationComplete(r.appToken);
@@ -2393,7 +2393,7 @@ public final class ActivityManagerService extends ActivityManagerNative
     public void notifyActivityDrawn(IBinder token) {
         if (DEBUG_VISBILITY) Slog.d(TAG, "notifyActivityDrawn: token=" + token);
         synchronized (this) {
-            ActivityRecord r= mStackSupervisor.isInAnyStackLocked(token);
+            ActivityRecord r = mStackSupervisor.isInAnyStackLocked(token);
             if (r != null) {
                 r.task.stack.notifyActivityDrawnLocked(r);
             }
@@ -3831,11 +3831,10 @@ public final class ActivityManagerService extends ActivityManagerNative
                 return;
             }
 
-            ArrayList<ActivityRecord> activities = new ArrayList<ActivityRecord>(
-                    mHeavyWeightProcess.activities);
-            for (int i=0; i<activities.size(); i++) {
+            ArrayList<ActivityRecord> activities = new ArrayList<>(mHeavyWeightProcess.activities);
+            for (int i = 0; i < activities.size(); i++) {
                 ActivityRecord r = activities.get(i);
-                if (!r.finishing) {
+                if (!r.finishing && r.isInStackLocked()) {
                     r.task.stack.finishActivityLocked(r, Activity.RESULT_CANCELED,
                             null, "finish-heavy", true);
                 }
@@ -3962,7 +3961,7 @@ public final class ActivityManagerService extends ActivityManagerNative
             final long origId = Binder.clearCallingIdentity();
             try {
                 ActivityRecord r = ActivityRecord.isInStackLocked(token);
-                if (r.task == null || r.task.stack == null) {
+                if (r == null) {
                     return false;
                 }
                 return r.task.stack.safelyDestroyActivityLocked(r, "app-req");
@@ -7616,20 +7615,19 @@ public final class ActivityManagerService extends ActivityManagerNative
                     android.Manifest.permission.GET_DETAILED_TASKS)
                     == PackageManager.PERMISSION_GRANTED;
 
-            final int N = mRecentTasks.size();
-            ArrayList<ActivityManager.RecentTaskInfo> res
-                    = new ArrayList<ActivityManager.RecentTaskInfo>(
-                            maxNum < N ? maxNum : N);
+            final int recentsCount = mRecentTasks.size();
+            ArrayList<ActivityManager.RecentTaskInfo> res =
+                    new ArrayList<>(maxNum < recentsCount ? maxNum : recentsCount);
 
             final Set<Integer> includedUsers;
             if (includeProfiles) {
                 includedUsers = getProfileIdsLocked(userId);
             } else {
-                includedUsers = new HashSet<Integer>();
+                includedUsers = new HashSet<>();
             }
             includedUsers.add(Integer.valueOf(userId));
 
-            for (int i=0; i<N && maxNum > 0; i++) {
+            for (int i = 0; i < recentsCount && maxNum > 0; i++) {
                 TaskRecord tr = mRecentTasks.get(i);
                 // Only add calling user or related users recent tasks
                 if (!includedUsers.contains(Integer.valueOf(tr.userId))) {
@@ -8111,7 +8109,7 @@ public final class ActivityManagerService extends ActivityManagerNative
             if (parentActivityToken == null) {
                 throw new IllegalArgumentException("parent token must not be null");
             }
-            ActivityRecord r = ActivityRecord.forToken(parentActivityToken);
+            ActivityRecord r = ActivityRecord.forTokenLocked(parentActivityToken);
             if (r == null) {
                 return null;
             }
@@ -8313,7 +8311,7 @@ public final class ActivityManagerService extends ActivityManagerNative
         long ident = Binder.clearCallingIdentity();
         try {
             synchronized (this) {
-                final ActivityRecord r = ActivityRecord.forToken(token);
+                final ActivityRecord r = ActivityRecord.forTokenLocked(token);
                 if (r == null) {
                     return;
                 }
@@ -16308,8 +16306,8 @@ public final class ActivityManagerService extends ActivityManagerNative
     @Override
     public boolean shouldUpRecreateTask(IBinder token, String destAffinity) {
         synchronized (this) {
-            ActivityRecord srec = ActivityRecord.forToken(token);
-            if (srec.task != null && srec.task.stack != null) {
+            ActivityRecord srec = ActivityRecord.forTokenLocked(token);
+            if (srec != null) {
                 return srec.task.stack.shouldUpRecreateTaskLocked(srec, destAffinity);
             }
         }
@@ -16320,16 +16318,19 @@ public final class ActivityManagerService extends ActivityManagerNative
             Intent resultData) {
 
         synchronized (this) {
-            final ActivityStack stack = ActivityRecord.getStackLocked(token);
-            if (stack != null) {
-                return stack.navigateUpToLocked(token, destIntent, resultCode, resultData);
+            final ActivityRecord r = ActivityRecord.forTokenLocked(token);
+            if (r != null) {
+                return r.task.stack.navigateUpToLocked(r, destIntent, resultCode, resultData);
             }
             return false;
         }
     }
 
     public int getLaunchedFromUid(IBinder activityToken) {
-        ActivityRecord srec = ActivityRecord.forToken(activityToken);
+        ActivityRecord srec;
+        synchronized (this) {
+            srec = ActivityRecord.forTokenLocked(activityToken);
+        }
         if (srec == null) {
             return -1;
         }
@@ -16337,7 +16338,10 @@ public final class ActivityManagerService extends ActivityManagerNative
     }
 
     public String getLaunchedFromPackage(IBinder activityToken) {
-        ActivityRecord srec = ActivityRecord.forToken(activityToken);
+        ActivityRecord srec;
+        synchronized (this) {
+            srec = ActivityRecord.forTokenLocked(activityToken);
+        }
         if (srec == null) {
             return null;
         }
