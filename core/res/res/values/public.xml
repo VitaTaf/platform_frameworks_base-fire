@@ -2636,4 +2636,6 @@
 
   <public type="attr" name="assistBlocked" />
   <public type="attr" name="supportsLaunchVoiceAssistFromKeyguard" />
+
+  <public type="attr" name="colorBackgroundFloating" />
 </resources>
