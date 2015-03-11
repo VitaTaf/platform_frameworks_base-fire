@@ -21,7 +21,6 @@ import android.util.Log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -307,7 +306,7 @@ public class BaseBundle {
      *
      * @param map a Map
      */
-    void putAll(Map map) {
+    void putAll(ArrayMap map) {
         unparcel();
         mMap.putAll(map);
     }
