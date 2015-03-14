@@ -481,6 +481,9 @@ public interface IActivityManager extends IInterface {
 
     public void systemBackupRestored() throws RemoteException;
 
+    public void setVoiceKeepAwake(IVoiceInteractionSession session, boolean keepAwake)
+            throws RemoteException;
+
     /*
      * Private non-Binder interfaces
      */
@@ -811,4 +814,5 @@ public interface IActivityManager extends IInterface {
     int REQUEST_ASSIST_CONTEXT_EXTRAS_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+284;
     int RESIZE_TASK_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+285;
     int GET_LOCK_TASK_MODE_STATE_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+286;
+    int SET_VOICE_KEEP_AWAKE_TRANSACTION = IBinder.FIRST_CALL_TRANSACTION+289;
 }
