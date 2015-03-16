@@ -75,6 +75,7 @@ import java.util.Objects;
 final class ActivityRecord {
     private static final String TAG = TAG_WITH_CLASS_NAME ? "ActivityRecord" : TAG_AM;
 
+    private static final boolean SHOW_ACTIVITY_START_TIME = true;
     static final boolean DEBUG_SAVED_STATE = ActivityStackSupervisor.DEBUG_SAVED_STATE;
     final public static String RECENTS_PACKAGE_NAME = "com.android.systemui.recents";
 
@@ -890,7 +891,7 @@ final class ActivityRecord {
             final long thisTime = curTime - fullyDrawnStartTime;
             final long totalTime = stack.mFullyDrawnStartTime != 0
                     ? (curTime - stack.mFullyDrawnStartTime) : thisTime;
-            if (ActivityManagerService.SHOW_ACTIVITY_START_TIME) {
+            if (SHOW_ACTIVITY_START_TIME) {
                 Trace.asyncTraceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER, "drawing", 0);
                 EventLog.writeEvent(EventLogTags.AM_ACTIVITY_FULLY_DRAWN_TIME,
                         userId, System.identityHashCode(this), shortComponentName,
@@ -921,7 +922,7 @@ final class ActivityRecord {
         final long thisTime = curTime - displayStartTime;
         final long totalTime = stack.mLaunchStartTime != 0
                 ? (curTime - stack.mLaunchStartTime) : thisTime;
-        if (ActivityManagerService.SHOW_ACTIVITY_START_TIME) {
+        if (SHOW_ACTIVITY_START_TIME) {
             Trace.asyncTraceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER, "launching", 0);
             EventLog.writeEvent(EventLogTags.AM_ACTIVITY_LAUNCH_TIME,
                     userId, System.identityHashCode(this), shortComponentName,
