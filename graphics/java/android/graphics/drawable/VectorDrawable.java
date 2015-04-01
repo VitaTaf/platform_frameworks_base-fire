@@ -388,7 +388,7 @@ public class VectorDrawable extends Drawable {
 
         // Apply theme to contained color state list.
         if (state.mTint != null && state.mTint.canApplyTheme()) {
-            state.mTint.applyTheme(t);
+            state.mTint = state.mTint.obtainForTheme(t);
         }
 
         final VPathRenderer path = state.mVPathRenderer;
@@ -624,7 +624,7 @@ public class VectorDrawable extends Drawable {
 
     @Override
     public int getChangingConfigurations() {
-        return super.getChangingConfigurations() | mVectorState.mChangingConfigurations;
+        return super.getChangingConfigurations() | mVectorState.getChangingConfigurations();
     }
 
     void setAllowCaching(boolean allowCaching) {
@@ -783,7 +783,8 @@ public class VectorDrawable extends Drawable {
 
         @Override
         public int getChangingConfigurations() {
-            return mChangingConfigurations;
+            return mChangingConfigurations
+                    | (mTint != null ? mTint.getChangingConfigurations() : 0);
         }
     }
 
