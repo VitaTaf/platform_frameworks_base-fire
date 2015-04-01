@@ -197,7 +197,7 @@ public class NavigationBarView extends LinearLayout {
         mDelegateHelper.setDelegateView(view);
     }
 
-    public void setBar(BaseStatusBar phoneStatusBar) {
+    public void setBar(PhoneStatusBar phoneStatusBar) {
         mTaskSwitchHelper.setBar(phoneStatusBar);
         mDelegateHelper.setBar(phoneStatusBar);
     }
@@ -263,8 +263,8 @@ public class NavigationBarView extends LinearLayout {
         return mCurrentView.findViewById(R.id.back);
     }
 
-    public View getHomeButton() {
-        return mCurrentView.findViewById(R.id.home);
+    public KeyButtonView getHomeButton() {
+        return (KeyButtonView) mCurrentView.findViewById(R.id.home);
     }
 
     public View getImeSwitchButton() {
