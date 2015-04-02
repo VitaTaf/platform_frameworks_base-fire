@@ -2632,4 +2632,5 @@
   <public type="style" name="TextAppearance.Material.Widget.Button.Inverse" />
   <public type="style" name="ThemeOverlay.Material.Dialog.Alert" />
 
+  <public type="attr" name="supportsAssistGesture" />
 </resources>
