@@ -484,7 +484,8 @@ public interface IActivityManager extends IInterface {
     public void setVoiceKeepAwake(IVoiceInteractionSession session, boolean keepAwake)
             throws RemoteException;
 
-    public void setDumpHeapDebugLimit(String processName, long maxMemSize) throws RemoteException;
+    public void setDumpHeapDebugLimit(String processName, int uid, long maxMemSize,
+            String reportPackage) throws RemoteException;
     public void dumpHeapFinished(String path) throws RemoteException;
 
     /*

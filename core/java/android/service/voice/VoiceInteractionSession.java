@@ -507,6 +507,10 @@ public abstract class VoiceInteractionSession implements KeyEvent.Callback {
                 mCallbacks, true);
     }
 
+    public Context getContext() {
+        return mContext;
+    }
+
     Request newRequest(IVoiceInteractorCallback callback) {
         synchronized (this) {
             Request req = new Request(callback, this);
@@ -823,6 +827,12 @@ public abstract class VoiceInteractionSession implements KeyEvent.Callback {
         return false;
     }
 
+    /**
+     * Called when the user presses the back button while focus is in the session UI.  Note
+     * that this will only happen if the session UI has requested input focus in its window;
+     * otherwise, the back key will go to whatever window has focus and do whatever behavior
+     * it normally has there.
+     */
     public void onBackPressed() {
         hide();
     }
