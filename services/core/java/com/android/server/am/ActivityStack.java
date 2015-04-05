@@ -1237,6 +1237,7 @@ final class ActivityStack {
         // make sure any activities under it are now visible.
         boolean aboveTop = true;
         boolean behindFullscreen = !isStackVisibleLocked();
+        boolean noStackActivityResumed = (isInStackLocked(starting) == null);
 
         for (int taskNdx = mTaskHistory.size() - 1; taskNdx >= 0; --taskNdx) {
             final TaskRecord task = mTaskHistory.get(taskNdx);
@@ -1264,9 +1265,8 @@ final class ActivityStack {
                     }
 
                     if (r.app == null || r.app.thread == null) {
-                        // This activity needs to be visible, but isn't even
-                        // running...  get it started, but don't resume it
-                        // at this point.
+                        // This activity needs to be visible, but isn't even running...
+                        // get it started and resume if no other stack in this stack is resumed.
                         if (DEBUG_VISBILITY) Slog.v(TAG, "Start and freeze screen for " + r);
                         if (r != starting) {
                             r.startFreezingScreenLocked(r.app, configChanges);
@@ -1277,7 +1277,9 @@ final class ActivityStack {
                             setVisible(r, true);
                         }
                         if (r != starting) {
-                            mStackSupervisor.startSpecificActivityLocked(r, false, false);
+                            mStackSupervisor.startSpecificActivityLocked(
+                                    r, noStackActivityResumed, false);
+                            noStackActivityResumed = false;
                         }
 
                     } else if (r.visible) {
