@@ -104,8 +104,8 @@ public class ZenModeHelper {
 
     public boolean matchesCallFilter(UserHandle userHandle, Bundle extras,
             ValidateNotificationPeople validator, int contactsTimeoutMs, float timeoutAffinity) {
-        return ZenModeFiltering.matchesCallFilter(mZenMode, mConfig, userHandle, extras, validator,
-                contactsTimeoutMs, timeoutAffinity);
+        return ZenModeFiltering.matchesCallFilter(mContext, mZenMode, mConfig, userHandle, extras,
+                validator, contactsTimeoutMs, timeoutAffinity);
     }
 
     public boolean isCall(NotificationRecord record) {
@@ -198,8 +198,8 @@ public class ZenModeHelper {
         dump(pw, prefix, "mConfig", mConfig);
         dump(pw, prefix, "mDefaultConfig", mDefaultConfig);
         pw.print(prefix); pw.print("mPreviousRingerMode="); pw.println(mPreviousRingerMode);
-        pw.print(prefix); pw.print("DefaultPhoneApp="); pw.println(mFiltering.getDefaultPhoneApp());
         pw.print(prefix); pw.print("mEffectsSuppressed="); pw.println(mEffectsSuppressed);
+        mFiltering.dump(pw, prefix);
         mConditions.dump(pw, prefix);
     }
 
@@ -209,9 +209,9 @@ public class ZenModeHelper {
             pw.println(config);
             return;
         }
-        pw.printf("allow(calls=%s,events=%s,from=%s,messages=%s,reminders=%s)\n",
-                config.allowCalls, config.allowEvents, config.allowFrom, config.allowMessages,
-                config.allowReminders);
+        pw.printf("allow(calls=%s,repeatCallers=%s,events=%s,from=%s,messages=%s,reminders=%s)\n",
+                config.allowCalls, config.allowRepeatCallers, config.allowEvents, config.allowFrom,
+                config.allowMessages, config.allowReminders);
         pw.print(prefix); pw.print("  manualRule="); pw.println(config.manualRule);
         if (config.automaticRules.isEmpty()) return;
         final int N = config.automaticRules.size();
@@ -327,7 +327,8 @@ public class ZenModeHelper {
         applyRestrictions(muteNotifications, USAGE_NOTIFICATION);
 
         // call restrictions
-        final boolean muteCalls = zen && !mConfig.allowCalls || mEffectsSuppressed;
+        final boolean muteCalls = zen && !mConfig.allowCalls && !mConfig.allowRepeatCallers
+                || mEffectsSuppressed;
         applyRestrictions(muteCalls, USAGE_NOTIFICATION_RINGTONE);
 
         // alarm/media restrictions
