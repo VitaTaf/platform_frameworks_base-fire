@@ -624,6 +624,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mHeadsUpManager.addListener(this);
         mHeadsUpManager.addListener(mNotificationPanel);
         mNotificationPanel.setHeadsUpManager(mHeadsUpManager);
+        mNotificationData.setHeadsUpManager(mHeadsUpManager);
 
         if (MULTIUSER_DEBUG) {
             mNotificationPanelDebugText = (TextView) mNotificationPanel.findViewById(
@@ -1855,7 +1856,10 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             if (mHeadsUpEntriesToRemoveOnSwitch.isEmpty()) {
                 mLatestRankingMap = null;
             }
+        } else {
+            updateNotificationRanking(null);
         }
+
     }
 
     /**
