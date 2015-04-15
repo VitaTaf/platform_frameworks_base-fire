@@ -774,7 +774,7 @@ public class StackStateAnimator {
         };
     }
 
-    private static <T> T getChildTag(View child, int tag) {
+    public static <T> T getChildTag(View child, int tag) {
         return (T) child.getTag(tag);
     }
 
