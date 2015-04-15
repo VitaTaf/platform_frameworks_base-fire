@@ -89,4 +89,6 @@ interface INotificationManager
 
     byte[] getBackupPayload(int user);
     void applyRestore(in byte[] payload, int user);
+
+    ParceledListSlice getAppActiveNotifications(String callingPkg, int userId);
 }
