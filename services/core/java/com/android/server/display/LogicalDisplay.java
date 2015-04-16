@@ -298,7 +298,10 @@ final class LogicalDisplay {
         // multiplying the fractions by the product of their denominators before
         // comparing them.
         int displayRectWidth, displayRectHeight;
-        if (physWidth * displayInfo.logicalHeight
+        if ((displayInfo.flags & Display.FLAG_SCALING_DISABLED) != 0) {
+            displayRectWidth = displayInfo.logicalWidth;
+            displayRectHeight = displayInfo.logicalHeight;
+        } else if (physWidth * displayInfo.logicalHeight
                 < physHeight * displayInfo.logicalWidth) {
             // Letter box.
             displayRectWidth = physWidth;
