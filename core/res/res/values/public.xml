@@ -2630,5 +2630,6 @@
   <public type="style" name="Theme.Material.Light.LightStatusBar" />
   <public type="style" name="ThemeOverlay.Material.Dialog" />
   <public type="style" name="TextAppearance.Material.Widget.Button.Inverse" />
+  <public type="style" name="ThemeOverlay.Material.Dialog.Alert" />
 
 </resources>
