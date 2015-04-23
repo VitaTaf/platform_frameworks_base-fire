@@ -2050,4 +2050,7 @@
 
     <!-- Specifies the maximum burn-in offset vertically. -->
     <integer name="config_burnInProtectionMaxVerticalOffset">0</integer>
+
+    <!-- This config is used to force VoiceInteractionService to start on certain low ram devices. -->
+    <bool name="config_forceEnableVoiceInteractionService">false</bool>
 </resources>
