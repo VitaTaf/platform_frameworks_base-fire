@@ -1981,6 +1981,7 @@
     <string-array translatable="false" name="config_system_condition_providers">
         <item>countdown</item>
         <item>schedule</item>
+        <item>event</item>
     </string-array>
 
     <!-- Priority repeat caller threshold, in minutes -->
