@@ -540,7 +540,7 @@ public class ZenModeConfig implements Parcelable {
         }
         priorityCallSenders = sourceToPrioritySenders(allowCallsFrom, priorityCallSenders);
         priorityMessageSenders = sourceToPrioritySenders(allowMessagesFrom, priorityMessageSenders);
-        return new Policy(priorityCategories, priorityCallSenders);
+        return new Policy(priorityCategories, priorityCallSenders, priorityMessageSenders);
     }
 
     private static int sourceToPrioritySenders(int source, int def) {
@@ -569,7 +569,9 @@ public class ZenModeConfig implements Parcelable {
         allowReminders = (policy.priorityCategories & Policy.PRIORITY_CATEGORY_REMINDERS) != 0;
         allowRepeatCallers = (policy.priorityCategories & Policy.PRIORITY_CATEGORY_REPEAT_CALLERS)
                 != 0;
-        allowCallsFrom = prioritySendersToSource(policy.prioritySenders, allowCallsFrom);
+        allowCallsFrom = prioritySendersToSource(policy.priorityCallSenders, allowCallsFrom);
+        allowMessagesFrom = prioritySendersToSource(policy.priorityMessageSenders,
+                allowMessagesFrom);
     }
 
     public static Condition toTimeCondition(Context context, int minutesFromNow, int userHandle) {
