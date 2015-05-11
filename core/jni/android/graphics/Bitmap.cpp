@@ -362,6 +362,21 @@ static jobject Bitmap_copy(JNIEnv* env, jobject, jlong srcHandle,
             getPremulBitmapCreateFlags(isMutable), NULL, NULL);
 }
 
+static jobject Bitmap_copyAshmem(JNIEnv* env, jobject, jlong srcHandle) {
+    SkBitmap src;
+    reinterpret_cast<Bitmap*>(srcHandle)->getSkBitmap(&src);
+    SkBitmap result;
+
+    AshmemPixelAllocator allocator(env);
+    if (!src.copyTo(&result, &allocator)) {
+        return NULL;
+    }
+    Bitmap* bitmap = allocator.getStorageObjAndReset();
+    bitmap->peekAtPixelRef()->setImmutable();
+    jobject ret = GraphicsJNI::createBitmap(env, bitmap, getPremulBitmapCreateFlags(false));
+    return ret;
+}
+
 static void Bitmap_destructor(JNIEnv* env, jobject, jlong bitmapHandle) {
     SkBitmap* bitmap = reinterpret_cast<SkBitmap*>(bitmapHandle);
 #ifdef USE_OPENGL_RENDERER
@@ -888,6 +903,8 @@ static JNINativeMethod gBitmapMethods[] = {
         (void*)Bitmap_creator },
     {   "nativeCopy",               "(JIZ)Landroid/graphics/Bitmap;",
         (void*)Bitmap_copy },
+    {   "nativeCopyAshmem",         "(J)Landroid/graphics/Bitmap;",
+        (void*)Bitmap_copyAshmem },
     {   "nativeDestructor",         "(J)V", (void*)Bitmap_destructor },
     {   "nativeRecycle",            "(J)Z", (void*)Bitmap_recycle },
     {   "nativeReconfigure",        "(JIIIIZ)V", (void*)Bitmap_reconfigure },
