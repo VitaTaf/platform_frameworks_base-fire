@@ -665,6 +665,8 @@ public class WindowManagerService extends IWindowManager.Stub
         boolean mObscureApplicationContentOnSecondaryDisplays = false;
 
         float mPreferredRefreshRate = 0;
+
+        int mPreferredModeId = 0;
     }
     final LayoutFields mInnerFields = new LayoutFields();
 
@@ -9636,6 +9638,10 @@ public class WindowManagerService extends IWindowManager.Stub
                         && w.mAttrs.preferredRefreshRate != 0) {
                     mInnerFields.mPreferredRefreshRate = w.mAttrs.preferredRefreshRate;
                 }
+                if (mInnerFields.mPreferredModeId == 0
+                        && w.mAttrs.preferredDisplayModeId != 0) {
+                    mInnerFields.mPreferredModeId = w.mAttrs.preferredDisplayModeId;
+                }
             }
         }
     }
@@ -9769,6 +9775,7 @@ public class WindowManagerService extends IWindowManager.Stub
                 // Reset for each display.
                 mInnerFields.mDisplayHasContent = false;
                 mInnerFields.mPreferredRefreshRate = 0;
+                mInnerFields.mPreferredModeId = 0;
 
                 int repeats = 0;
                 do {
@@ -9990,6 +9997,7 @@ public class WindowManagerService extends IWindowManager.Stub
 
                 mDisplayManagerInternal.setDisplayProperties(displayId,
                         mInnerFields.mDisplayHasContent, mInnerFields.mPreferredRefreshRate,
+                        mInnerFields.mPreferredModeId,
                         true /* inTraversal, must call performTraversalInTrans... below */);
 
                 getDisplayContentLocked(displayId).stopDimmingIfNeeded();
