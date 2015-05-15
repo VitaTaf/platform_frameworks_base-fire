@@ -1001,7 +1001,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             invokeAssistGesture(true /* vibrate */);
             awakenDreams();
             if (mNavigationBarView != null) {
-                mNavigationBarView.getHomeButton().abortCurrentGesture();
+                mNavigationBarView.abortCurrentGesture();
             }
         }
     };
