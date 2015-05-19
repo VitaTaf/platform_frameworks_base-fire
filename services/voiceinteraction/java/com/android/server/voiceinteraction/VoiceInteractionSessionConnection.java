@@ -36,6 +36,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.UserHandle;
+import android.provider.Settings;
 import android.service.voice.IVoiceInteractionSession;
 import android.service.voice.IVoiceInteractionSessionService;
 import android.service.voice.VoiceInteractionService;
@@ -195,7 +196,8 @@ final class VoiceInteractionSessionConnection implements ServiceConnection {
             boolean needDisclosure = false;
             if ((flags&VoiceInteractionService.START_WITH_ASSIST) != 0) {
                 if (mAppOps.noteOpNoThrow(AppOpsManager.OP_ASSIST_STRUCTURE, mCallingUid,
-                        mSessionComponentName.getPackageName()) == AppOpsManager.MODE_ALLOWED) {
+                        mSessionComponentName.getPackageName()) == AppOpsManager.MODE_ALLOWED
+                        && isStructureEnabled()) {
                     try {
                         needDisclosure = true;
                         mAm.requestAssistContextExtras(ActivityManager.ASSIST_CONTEXT_FULL,
@@ -463,6 +465,11 @@ final class VoiceInteractionSessionConnection implements ServiceConnection {
             mContext.unbindService(mFullConnection);
             mFullyBound = false;
         }
+    }
+
+    private boolean isStructureEnabled() {
+        return Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.Secure.ASSIST_STRUCTURE_ENABLED, 1, mUser) != 0;
     }
 
     public void dump(String prefix, PrintWriter pw) {

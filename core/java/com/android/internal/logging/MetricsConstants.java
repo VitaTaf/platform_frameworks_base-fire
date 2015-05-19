@@ -166,4 +166,5 @@ public interface MetricsConstants {
     public static final int WIFI_P2P = 109;
     public static final int WIFI_SAVED_ACCESS_POINTS = 106;
     public static final int WIRELESS = 110;
+    public static final int APPLICATIONS_MANAGE_ASSIST = 186;
 }
