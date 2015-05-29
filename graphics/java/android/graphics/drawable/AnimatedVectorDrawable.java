@@ -23,6 +23,7 @@ import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
+import android.graphics.Insets;
 import android.graphics.Outline;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
@@ -265,6 +266,12 @@ public class AnimatedVectorDrawable extends Drawable implements Animatable {
     @Override
     public void getOutline(@NonNull Outline outline) {
         mAnimatedVectorState.mVectorDrawable.getOutline(outline);
+    }
+
+    /** @hide */
+    @Override
+    public Insets getOpticalInsets() {
+        return mAnimatedVectorState.mVectorDrawable.getOpticalInsets();
     }
 
     @Override
