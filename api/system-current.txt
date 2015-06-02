@@ -39646,7 +39646,7 @@ package android.widget {
     ctor public AnalogClock(android.content.Context, android.util.AttributeSet, int, int);
   }
 
-  public class ArrayAdapter extends android.widget.BaseAdapter implements android.widget.Filterable {
+  public class ArrayAdapter extends android.widget.BaseAdapter implements android.widget.Filterable android.widget.ThemedSpinnerAdapter {
     ctor public ArrayAdapter(android.content.Context, int);
     ctor public ArrayAdapter(android.content.Context, int, int);
     ctor public ArrayAdapter(android.content.Context, int, T[]);
@@ -39885,7 +39885,11 @@ package android.widget {
     method public abstract void onCheckedChanged(android.widget.CompoundButton, boolean);
   }
 
+<<<<<<< HEAD
   public abstract class CursorAdapter extends android.widget.BaseAdapter implements android.widget.Filterable {
+=======
+  public abstract class CursorAdapter extends android.widget.BaseAdapter implements android.widget.Filterable android.widget.ThemedSpinnerAdapter {
+>>>>>>> 2add9bc... API review feedback for ThemedSpinnerAdapter, Spinner
     ctor public deprecated CursorAdapter(android.content.Context, android.database.Cursor);
     ctor public CursorAdapter(android.content.Context, android.database.Cursor, boolean);
     ctor public CursorAdapter(android.content.Context, android.database.Cursor, int);
@@ -41148,7 +41152,11 @@ package android.widget {
     method public abstract boolean onShareTargetSelected(android.widget.ShareActionProvider, android.content.Intent);
   }
 
+<<<<<<< HEAD
   public class SimpleAdapter extends android.widget.BaseAdapter implements android.widget.Filterable {
+=======
+  public class SimpleAdapter extends android.widget.BaseAdapter implements android.widget.Filterable android.widget.ThemedSpinnerAdapter {
+>>>>>>> 2add9bc... API review feedback for ThemedSpinnerAdapter, Spinner
     ctor public SimpleAdapter(android.content.Context, java.util.List<? extends java.util.Map<java.lang.String, ?>>, int, java.lang.String[], int[]);
     method public int getCount();
     method public android.widget.Filter getFilter();
@@ -41275,6 +41283,10 @@ package android.widget {
     ctor public Spinner(android.content.Context, android.util.AttributeSet, int);
     ctor public Spinner(android.content.Context, android.util.AttributeSet, int, int);
     ctor public Spinner(android.content.Context, android.util.AttributeSet, int, int, int);
+<<<<<<< HEAD
+=======
+    ctor public Spinner(android.content.Context, android.util.AttributeSet, int, int, int, android.content.res.Resources.Theme);
+>>>>>>> 2add9bc... API review feedback for ThemedSpinnerAdapter, Spinner
     method public int getDropDownHorizontalOffset();
     method public int getDropDownVerticalOffset();
     method public int getDropDownWidth();
@@ -41681,6 +41693,11 @@ package android.widget {
 
   public static class TextView.SavedState extends android.view.View.BaseSavedState {
     field public static final android.os.Parcelable.Creator<android.widget.TextView.SavedState> CREATOR;
+  }
+
+  public abstract interface ThemedSpinnerAdapter implements android.widget.SpinnerAdapter {
+    method public abstract android.content.res.Resources.Theme getDropDownViewTheme();
+    method public abstract void setDropDownViewTheme(android.content.res.Resources.Theme);
   }
 
   public class TimePicker extends android.widget.FrameLayout {
