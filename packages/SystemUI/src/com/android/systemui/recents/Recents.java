@@ -36,6 +36,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.util.MutableBoolean;
 import android.util.Pair;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -58,7 +59,6 @@ import com.android.systemui.recents.views.TaskViewTransform;
 import com.android.systemui.statusbar.phone.PhoneStatusBar;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Annotation for a method that is only called from the primary user's SystemUI process and will be
@@ -363,7 +363,12 @@ public class Recents extends SystemUI
         // RecentsActivity)
         RecentsTaskLoader loader = RecentsTaskLoader.getInstance();
         sInstanceLoadPlan = loader.createLoadPlan(mContext);
-        sInstanceLoadPlan.preloadRawTasks(true);
+
+        ActivityManager.RunningTaskInfo topTask = mSystemServicesProxy.getTopMostTask();
+        MutableBoolean isTopTaskHome = new MutableBoolean(true);
+        if (topTask != null && mSystemServicesProxy.isRecentsTopMost(topTask, isTopTaskHome)) {
+            sInstanceLoadPlan.preloadRawTasks(isTopTaskHome.value);
+        }
     }
 
     @Override
@@ -547,7 +552,7 @@ public class Recents extends SystemUI
         // If Recents is the front most activity, then we should just communicate with it directly
         // to launch the first task or dismiss itself
         ActivityManager.RunningTaskInfo topTask = mSystemServicesProxy.getTopMostTask();
-        AtomicBoolean isTopTaskHome = new AtomicBoolean(true);
+        MutableBoolean isTopTaskHome = new MutableBoolean(true);
         if (topTask != null && mSystemServicesProxy.isRecentsTopMost(topTask, isTopTaskHome)) {
             // Notify recents to toggle itself
             Intent intent = createLocalBroadcastIntent(mContext, ACTION_TOGGLE_RECENTS_ACTIVITY);
@@ -556,7 +561,7 @@ public class Recents extends SystemUI
             return;
         } else {
             // Otherwise, start the recents activity
-            startRecentsActivity(topTask, isTopTaskHome.get());
+            startRecentsActivity(topTask, isTopTaskHome.value);
         }
     }
 
@@ -564,9 +569,9 @@ public class Recents extends SystemUI
     void startRecentsActivity() {
         // Check if the top task is in the home stack, and start the recents activity
         ActivityManager.RunningTaskInfo topTask = mSystemServicesProxy.getTopMostTask();
-        AtomicBoolean isTopTaskHome = new AtomicBoolean(true);
+        MutableBoolean isTopTaskHome = new MutableBoolean(true);
         if (topTask == null || !mSystemServicesProxy.isRecentsTopMost(topTask, isTopTaskHome)) {
-            startRecentsActivity(topTask, isTopTaskHome.get());
+            startRecentsActivity(topTask, isTopTaskHome.value);
         }
     }
 
@@ -655,6 +660,7 @@ public class Recents extends SystemUI
         if (task == null) {
             // If no task is specified or we can not find the task just use the front most one
             task = tasks.get(tasks.size() - 1);
+            runningTaskOut.copyFrom(task);
         }
 
         // Get the transform for the running task
