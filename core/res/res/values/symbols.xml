@@ -1312,7 +1312,6 @@
   <java-symbol type="layout" name="preference_widget_seekbar" />
   <java-symbol type="layout" name="progress_dialog" />
   <java-symbol type="layout" name="resolve_list_item" />
-  <java-symbol type="layout" name="seekbar_dialog" />
   <java-symbol type="layout" name="select_dialog_singlechoice_holo" />
   <java-symbol type="layout" name="ssl_certificate" />
   <java-symbol type="layout" name="tab_content" />
@@ -2182,4 +2181,5 @@
 
   <java-symbol type="integer" name="config_defaultNightMode" />
   <java-symbol type="integer" name="config_zen_repeat_callers_threshold" />
+  <java-symbol type="attr" name="seekBarDialogPreferenceStyle" />
 </resources>
