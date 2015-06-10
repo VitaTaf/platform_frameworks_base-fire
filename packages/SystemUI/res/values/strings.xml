@@ -758,6 +758,9 @@
     <!-- Shows when people have clicked at the right edge of the screen to explain how to open the phone. In right-to-left languages, this is the opposite direction. [CHAR LIMIT=60] -->
     <string name="camera_hint">Swipe left for camera</string>
 
+    <!-- Accessibility content description for Interruption level: None. [CHAR LIMIT=NONE] -->
+    <string name="interruption_level_none_with_warning">Total silence.  This will also silence screen readers.</string>
+
     <!-- Interruption level: None. [CHAR LIMIT=40] -->
     <string name="interruption_level_none">Total silence</string>
 
