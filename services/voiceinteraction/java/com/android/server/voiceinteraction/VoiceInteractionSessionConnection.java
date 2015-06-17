@@ -31,6 +31,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -45,6 +46,8 @@ import com.android.internal.app.IAssistScreenshotReceiver;
 import com.android.internal.app.IVoiceInteractionSessionShowCallback;
 import com.android.internal.app.IVoiceInteractor;
 import com.android.internal.os.IResultReceiver;
+import com.android.server.LocalServices;
+import com.android.server.statusbar.StatusBarManagerInternal;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -60,6 +63,7 @@ final class VoiceInteractionSessionConnection implements ServiceConnection {
     final Context mContext;
     final Callback mCallback;
     final int mCallingUid;
+    final Handler mHandler;
     final IActivityManager mAm;
     final IWindowManager mIWindowManager;
     final AppOpsManager mAppOps;
@@ -138,13 +142,14 @@ final class VoiceInteractionSessionConnection implements ServiceConnection {
     };
 
     public VoiceInteractionSessionConnection(Object lock, ComponentName component, int user,
-            Context context, Callback callback, int callingUid) {
+            Context context, Callback callback, int callingUid, Handler handler) {
         mLock = lock;
         mSessionComponentName = component;
         mUser = user;
         mContext = context;
         mCallback = callback;
         mCallingUid = callingUid;
+        mHandler = handler;
         mAm = ActivityManagerNative.getDefault();
         mIWindowManager = IWindowManager.Stub.asInterface(
                 ServiceManager.getService(Context.WINDOW_SERVICE));
@@ -187,10 +192,12 @@ final class VoiceInteractionSessionConnection implements ServiceConnection {
             mShowArgs = args;
             mShowFlags = flags;
             mHaveAssistData = false;
+            boolean needDisclosure = false;
             if ((flags&VoiceInteractionService.START_WITH_ASSIST) != 0) {
                 if (mAppOps.noteOpNoThrow(AppOpsManager.OP_ASSIST_STRUCTURE, mCallingUid,
                         mSessionComponentName.getPackageName()) == AppOpsManager.MODE_ALLOWED) {
                     try {
+                        needDisclosure = true;
                         mAm.requestAssistContextExtras(ActivityManager.ASSIST_CONTEXT_FULL,
                                 mAssistReceiver);
                     } catch (RemoteException e) {
@@ -207,6 +214,7 @@ final class VoiceInteractionSessionConnection implements ServiceConnection {
                 if (mAppOps.noteOpNoThrow(AppOpsManager.OP_ASSIST_SCREENSHOT, mCallingUid,
                         mSessionComponentName.getPackageName()) == AppOpsManager.MODE_ALLOWED) {
                     try {
+                        needDisclosure = true;
                         mIWindowManager.requestAssistScreenshot(mScreenshotReceiver);
                     } catch (RemoteException e) {
                     }
@@ -216,6 +224,9 @@ final class VoiceInteractionSessionConnection implements ServiceConnection {
                 }
             } else {
                 mScreenshot = null;
+            }
+            if (needDisclosure) {
+                mHandler.post(mShowAssistDisclosureRunnable);
             }
             if (mSession != null) {
                 try {
@@ -470,4 +481,15 @@ final class VoiceInteractionSessionConnection implements ServiceConnection {
             pw.print(prefix); pw.print("mAssistData="); pw.println(mAssistData);
         }
     }
+
+    private Runnable mShowAssistDisclosureRunnable = new Runnable() {
+        @Override
+        public void run() {
+            StatusBarManagerInternal statusBarInternal = LocalServices.getService(
+                    StatusBarManagerInternal.class);
+            if (statusBarInternal != null) {
+                statusBarInternal.showAssistDisclosure();
+            }
+        }
+    };
 };

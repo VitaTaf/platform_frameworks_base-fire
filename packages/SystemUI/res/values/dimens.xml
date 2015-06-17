@@ -574,4 +574,10 @@
 
     <!-- Standard image button size for volume dialog buttons -->
     <dimen name="volume_button_size">48dp</dimen>
+
+    <!-- Thickness of the assist disclosure beams -->
+    <dimen name="assist_disclosure_thickness">4dp</dimen>
+
+    <!-- Thickness of the shadows of the assist disclosure beams -->
+    <dimen name="assist_disclosure_shadow_thickness">1.5dp</dimen>
 </resources>
