@@ -117,6 +117,7 @@ public class ZenModePanel extends LinearLayout {
     private Condition mSessionExitCondition;
     private Condition[] mConditions;
     private Condition mTimeCondition;
+    private boolean mVoiceCapable;
 
     public ZenModePanel(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -126,6 +127,7 @@ public class ZenModePanel extends LinearLayout {
         mIconPulser = new IconPulser(mContext);
         mForeverId = Condition.newId(mContext).appendPath("forever").build();
         mSpTexts = new SpTexts(mContext);
+        mVoiceCapable = Util.isVoiceCapable(mContext);
         if (DEBUG) Log.d(mTag, "new ZenModePanel");
     }
 
@@ -143,6 +145,7 @@ public class ZenModePanel extends LinearLayout {
         pw.println(mPrefs.mConfirmedPriorityIntroduction);
         pw.print("  mConfirmedSilenceIntroduction=");
         pw.println(mPrefs.mConfirmedSilenceIntroduction);
+        pw.print("  mVoiceCapable="); pw.println(mVoiceCapable);
         mTransitionHelper.dump(fd, pw, args);
     }
 
@@ -443,6 +446,7 @@ public class ZenModePanel extends LinearLayout {
         mZenIntroduction.setVisibility(introduction ? VISIBLE : GONE);
         if (introduction) {
             mZenIntroductionMessage.setText(zenImportant ? R.string.zen_priority_introduction
+                    : mVoiceCapable ? R.string.zen_silence_introduction_voice
                     : R.string.zen_silence_introduction);
             mZenIntroductionCustomize.setVisibility(zenImportant ? VISIBLE : GONE);
         }
