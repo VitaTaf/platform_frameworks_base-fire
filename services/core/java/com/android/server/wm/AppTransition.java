@@ -519,6 +519,7 @@ public class AppTransition implements Dump {
             set.addAnimation(clipAnimTB);
             set.addAnimation(translateY);
             set.addAnimation(alpha);
+            set.setZAdjustment(Animation.ZORDER_TOP);
             set.initialize(appWidth, appHeight, appWidth, appHeight);
             anim = set;
         } else {
