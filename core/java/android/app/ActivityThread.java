@@ -2346,6 +2346,7 @@ public final class ActivityThread {
 
         final DisplayManagerGlobal dm = DisplayManagerGlobal.getInstance();
         try {
+            int displayId = ActivityManagerNative.getDefault().getActivityDisplayId(r.token);
             displayId = ActivityManagerNative.getDefault().getActivityDisplayId(r.token);
             if (displayId > Display.DEFAULT_DISPLAY) {
                 Display display = dm.getRealDisplay(displayId, r.token);
