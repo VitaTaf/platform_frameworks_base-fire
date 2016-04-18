@@ -491,7 +491,6 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
                 // Notify the system to skip the thumbnail layer by using an ALPHA_8 bitmap
                 b = Bitmap.createBitmap(1, 1, Bitmap.Config.ALPHA_8);
             }
-            Bitmap bImmut = b.createAshmemBitmap();
             ActivityOptions.OnAnimationStartedListener animStartedListener = null;
             if (lockToTask) {
                 animStartedListener = new ActivityOptions.OnAnimationStartedListener() {
@@ -517,7 +516,7 @@ public class RecentsView extends FrameLayout implements TaskStackView.TaskStackV
                         sourceView.getHandler(), animStartedListener);
             } else {
                 opts = ActivityOptions.makeThumbnailAspectScaleUpAnimation(sourceView,
-                        bImmut, offsetX, offsetY, transform.rect.width(), transform.rect.height(),
+                        b, offsetX, offsetY, transform.rect.width(), transform.rect.height(),
                         sourceView.getHandler(), animStartedListener);
             }
         }

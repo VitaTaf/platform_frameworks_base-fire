@@ -625,11 +625,10 @@ public class Recents extends SystemUI
                 mHeaderBar.draw(c);
                 c.setBitmap(null);
             }
-            Bitmap thumbnailImmutable = thumbnail.createAshmemBitmap();
 
             mStartAnimationTriggered = false;
             return ActivityOptions.makeThumbnailAspectScaleDownAnimation(mDummyStackView,
-                    thumbnailImmutable, toTaskRect.left, toTaskRect.top, toTaskRect.width(),
+                    thumbnail, toTaskRect.left, toTaskRect.top, toTaskRect.width(),
                     toTaskRect.height(), mHandler, this);
         }
 
