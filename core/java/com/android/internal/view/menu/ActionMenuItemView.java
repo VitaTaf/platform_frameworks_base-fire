@@ -217,14 +217,14 @@ public class ActionMenuItemView extends TextView
     }
 
     @Override
-    public boolean dispatchPopulateAccessibilityEventInternal(AccessibilityEvent event) {
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         onPopulateAccessibilityEvent(event);
         return true;
     }
 
     @Override
-    public void onPopulateAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onPopulateAccessibilityEventInternal(event);
+    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
+        super.onPopulateAccessibilityEvent(event);
         final CharSequence cdesc = getContentDescription();
         if (!TextUtils.isEmpty(cdesc)) {
             event.getText().add(cdesc);

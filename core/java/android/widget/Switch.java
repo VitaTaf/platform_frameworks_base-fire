@@ -665,10 +665,9 @@ public class Switch extends CompoundButton {
         }
     }
 
-    /** @hide */
     @Override
-    public void onPopulateAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onPopulateAccessibilityEventInternal(event);
+    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
+        super.onPopulateAccessibilityEvent(event);
 
         final CharSequence text = isChecked() ? mTextOn : mTextOff;
         if (text != null) {
@@ -1181,17 +1180,15 @@ public class Switch extends CompoundButton {
         }
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onInitializeAccessibilityEventInternal(event);
+    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
         event.setClassName(Switch.class.getName());
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfoInternal(info);
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
         info.setClassName(Switch.class.getName());
         CharSequence switchText = isChecked() ? mTextOn : mTextOff;
         if (!TextUtils.isEmpty(switchText)) {

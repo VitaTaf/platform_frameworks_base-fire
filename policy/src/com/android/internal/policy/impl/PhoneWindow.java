@@ -2500,14 +2500,14 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
         }
 
         @Override
-        public boolean dispatchPopulateAccessibilityEventInternal(AccessibilityEvent event) {
+        public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
             final Callback cb = getCallback();
             if (cb != null && !isDestroyed()) {
                 if (cb.dispatchPopulateAccessibilityEvent(event)) {
                     return true;
                 }
             }
-            return super.dispatchPopulateAccessibilityEventInternal(event);
+            return super.dispatchPopulateAccessibilityEvent(event);
         }
 
         @Override

@@ -239,10 +239,9 @@ public class ImageView extends View {
         return (getBackground() != null && getBackground().getCurrent() != null);
     }
 
-    /** @hide */
     @Override
-    public void onPopulateAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onPopulateAccessibilityEventInternal(event);
+    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
+        super.onPopulateAccessibilityEvent(event);
         CharSequence contentDescription = getContentDescription();
         if (!TextUtils.isEmpty(contentDescription)) {
             event.getText().add(contentDescription);
@@ -1419,17 +1418,15 @@ public class ImageView extends View {
         }
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onInitializeAccessibilityEventInternal(event);
+    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
         event.setClassName(ImageView.class.getName());
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfoInternal(info);
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
         info.setClassName(ImageView.class.getName());
     }
 }

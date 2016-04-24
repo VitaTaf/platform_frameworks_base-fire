@@ -1373,17 +1373,15 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
 
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onInitializeAccessibilityEventInternal(event);
+    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
         event.setClassName(Gallery.class.getName());
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfoInternal(info);
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
         info.setClassName(Gallery.class.getName());
         info.setScrollable(mItemCount > 1);
         if (isEnabled()) {
@@ -1396,10 +1394,9 @@ public class Gallery extends AbsSpinner implements GestureDetector.OnGestureList
         }
     }
 
-    /** @hide */
     @Override
-    public boolean performAccessibilityActionInternal(int action, Bundle arguments) {
-        if (super.performAccessibilityActionInternal(action, arguments)) {
+    public boolean performAccessibilityAction(int action, Bundle arguments) {
+        if (super.performAccessibilityAction(action, arguments)) {
             return true;
         }
         switch (action) {

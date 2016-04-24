@@ -700,8 +700,7 @@ public class ActionMenuView extends LinearLayout implements MenuBuilder.ItemInvo
         return result;
     }
 
-    /** @hide */
-    public boolean dispatchPopulateAccessibilityEventInternal(AccessibilityEvent event) {
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         return false;
     }
 

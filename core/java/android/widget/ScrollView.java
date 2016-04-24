@@ -809,10 +809,9 @@ public class ScrollView extends FrameLayout {
         awakenScrollBars();
     }
 
-    /** @hide */
     @Override
-    public boolean performAccessibilityActionInternal(int action, Bundle arguments) {
-        if (super.performAccessibilityActionInternal(action, arguments)) {
+    public boolean performAccessibilityAction(int action, Bundle arguments) {
+        if (super.performAccessibilityAction(action, arguments)) {
             return true;
         }
         if (!isEnabled()) {
@@ -839,10 +838,9 @@ public class ScrollView extends FrameLayout {
         return false;
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfoInternal(info);
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
         info.setClassName(ScrollView.class.getName());
         if (isEnabled()) {
             final int scrollRange = getScrollRange();
@@ -858,10 +856,9 @@ public class ScrollView extends FrameLayout {
         }
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onInitializeAccessibilityEventInternal(event);
+    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
         event.setClassName(ScrollView.class.getName());
         final boolean scrollable = getScrollRange() > 0;
         event.setScrollable(scrollable);

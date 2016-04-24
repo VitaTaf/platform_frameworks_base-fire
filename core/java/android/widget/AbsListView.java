@@ -1466,9 +1466,8 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         onScrollChanged(0, 0, 0, 0); // dummy values, View's implementation does not use these.
     }
 
-    /** @hide */
     @Override
-    public void sendAccessibilityEventInternal(int eventType) {
+    public void sendAccessibilityEvent(int eventType) {
         // Since this class calls onScrollChanged even if the mFirstPosition and the
         // child count have not changed we will avoid sending duplicate accessibility
         // events.
@@ -1483,20 +1482,18 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 mLastAccessibilityScrollEventToIndex = lastVisiblePosition;
             }
         }
-        super.sendAccessibilityEventInternal(eventType);
+        super.sendAccessibilityEvent(eventType);
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onInitializeAccessibilityEventInternal(event);
+    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
         event.setClassName(AbsListView.class.getName());
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfoInternal(info);
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
         info.setClassName(AbsListView.class.getName());
         if (isEnabled()) {
             if (canScrollUp()) {
@@ -1525,10 +1522,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         }
     }
 
-    /** @hide */
     @Override
-    public boolean performAccessibilityActionInternal(int action, Bundle arguments) {
-        if (super.performAccessibilityActionInternal(action, arguments)) {
+    public boolean performAccessibilityAction(int action, Bundle arguments) {
+        if (super.performAccessibilityAction(action, arguments)) {
             return true;
         }
         switch (action) {

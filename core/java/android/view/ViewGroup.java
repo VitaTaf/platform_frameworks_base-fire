@@ -771,10 +771,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
      * @see #onRequestSendAccessibilityEvent(View, AccessibilityEvent)
      *
      * Note: Called from the default {@link View.AccessibilityDelegate}.
-     *
-     * @hide
      */
-    public boolean onRequestSendAccessibilityEventInternal(View child, AccessibilityEvent event) {
+    boolean onRequestSendAccessibilityEventInternal(View child, AccessibilityEvent event) {
         return true;
     }
 
@@ -2710,9 +2708,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /** @hide */
     @Override
-    public boolean dispatchPopulateAccessibilityEventInternal(AccessibilityEvent event) {
+    boolean dispatchPopulateAccessibilityEventInternal(AccessibilityEvent event) {
         boolean handled = false;
         if (includeForAccessibility()) {
             handled = super.dispatchPopulateAccessibilityEventInternal(event);
@@ -2739,9 +2736,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         return false;
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
+    void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfoInternal(info);
         if (getAccessibilityNodeProvider() != null) {
             return;
@@ -2759,9 +2755,8 @@ public abstract class ViewGroup extends View implements ViewParent, ViewManager 
         }
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
+    void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
         super.onInitializeAccessibilityEventInternal(event);
         event.setClassName(ViewGroup.class.getName());
     }

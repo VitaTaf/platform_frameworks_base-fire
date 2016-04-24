@@ -122,23 +122,20 @@ public class EditText extends TextView {
         super.setEllipsize(ellipsis);
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onInitializeAccessibilityEventInternal(event);
+    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
         event.setClassName(EditText.class.getName());
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfoInternal(info);
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
         info.setClassName(EditText.class.getName());
     }
 
-    /** @hide */
     @Override
-    public boolean performAccessibilityActionInternal(int action, Bundle arguments) {
+    public boolean performAccessibilityAction(int action, Bundle arguments) {
         switch (action) {
             case AccessibilityNodeInfo.ACTION_SET_TEXT: {
                 CharSequence text = (arguments != null) ? arguments.getCharSequence(
@@ -150,7 +147,7 @@ public class EditText extends TextView {
                 return true;
             }
             default: {
-                return super.performAccessibilityActionInternal(action, arguments);
+                return super.performAccessibilityAction(action, arguments);
             }
         }
     }

@@ -401,9 +401,8 @@ public class TabWidget extends LinearLayout implements OnFocusChangeListener {
         }
     }
 
-    /** @hide */
     @Override
-    public boolean dispatchPopulateAccessibilityEventInternal(AccessibilityEvent event) {
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         onPopulateAccessibilityEvent(event);
         // Dispatch only to the selected tab.
         if (mSelectedTab != -1) {
@@ -415,31 +414,28 @@ public class TabWidget extends LinearLayout implements OnFocusChangeListener {
         return false;
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onInitializeAccessibilityEventInternal(event);
+    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
         event.setClassName(TabWidget.class.getName());
         event.setItemCount(getTabCount());
         event.setCurrentItemIndex(mSelectedTab);
     }
 
 
-    /** @hide */
     @Override
-    public void sendAccessibilityEventUncheckedInternal(AccessibilityEvent event) {
+    public void sendAccessibilityEventUnchecked(AccessibilityEvent event) {
         // this class fires events only when tabs are focused or selected
         if (event.getEventType() == AccessibilityEvent.TYPE_VIEW_FOCUSED && isFocused()) {
             event.recycle();
             return;
         }
-        super.sendAccessibilityEventUncheckedInternal(event);
+        super.sendAccessibilityEventUnchecked(event);
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfoInternal(info);
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
         info.setClassName(TabWidget.class.getName());
     }
 

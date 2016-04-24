@@ -195,30 +195,26 @@ public class TimePicker extends FrameLayout {
         mDelegate.onRestoreInstanceState(ss);
     }
 
-    /** @hide */
     @Override
-    public boolean dispatchPopulateAccessibilityEventInternal(AccessibilityEvent event) {
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         return mDelegate.dispatchPopulateAccessibilityEvent(event);
     }
 
-    /** @hide */
     @Override
-    public void onPopulateAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onPopulateAccessibilityEventInternal(event);
+    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
+        super.onPopulateAccessibilityEvent(event);
         mDelegate.onPopulateAccessibilityEvent(event);
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onInitializeAccessibilityEventInternal(event);
+    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
         mDelegate.onInitializeAccessibilityEvent(event);
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfoInternal(info);
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
         mDelegate.onInitializeAccessibilityNodeInfo(info);
     }
 

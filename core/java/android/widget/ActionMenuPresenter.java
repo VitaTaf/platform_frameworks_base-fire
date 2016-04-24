@@ -645,10 +645,9 @@ public class ActionMenuPresenter extends BaseMenuPresenter
             return false;
         }
 
-    /** @hide */
         @Override
-        public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
-            super.onInitializeAccessibilityNodeInfoInternal(info);
+        public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+            super.onInitializeAccessibilityNodeInfo(info);
             info.setCanOpenPopup(true);
         }
 

@@ -5270,10 +5270,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @see #sendAccessibilityEvent(int)
      *
      * Note: Called from the default {@link AccessibilityDelegate}.
-     *
-     * @hide
      */
-    public void sendAccessibilityEventInternal(int eventType) {
+    void sendAccessibilityEventInternal(int eventType) {
         if (AccessibilityManager.getInstance(mContext).isEnabled()) {
             sendAccessibilityEventUnchecked(AccessibilityEvent.obtain(eventType));
         }
@@ -5306,10 +5304,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @see #sendAccessibilityEventUnchecked(AccessibilityEvent)
      *
      * Note: Called from the default {@link AccessibilityDelegate}.
-     *
-     * @hide
      */
-    public void sendAccessibilityEventUncheckedInternal(AccessibilityEvent event) {
+    void sendAccessibilityEventUncheckedInternal(AccessibilityEvent event) {
         if (!isShown()) {
             return;
         }
@@ -5359,10 +5355,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @see #dispatchPopulateAccessibilityEvent(AccessibilityEvent)
      *
      * Note: Called from the default {@link AccessibilityDelegate}.
-     *
-     * @hide
      */
-    public boolean dispatchPopulateAccessibilityEventInternal(AccessibilityEvent event) {
+    boolean dispatchPopulateAccessibilityEventInternal(AccessibilityEvent event) {
         onPopulateAccessibilityEvent(event);
         return false;
     }
@@ -5410,10 +5404,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @see #onPopulateAccessibilityEvent(AccessibilityEvent)
      *
      * Note: Called from the default {@link AccessibilityDelegate}.
-     *
-     * @hide
      */
-    public void onPopulateAccessibilityEventInternal(AccessibilityEvent event) {
+    void onPopulateAccessibilityEventInternal(AccessibilityEvent event) {
     }
 
     /**
@@ -5454,10 +5446,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @see #onInitializeAccessibilityEvent(AccessibilityEvent)
      *
      * Note: Called from the default {@link AccessibilityDelegate}.
-     *
-     * @hide
      */
-    public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
+    void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
         event.setSource(this);
         event.setClassName(View.class.getName());
         event.setPackageName(getContext().getPackageName());
@@ -5512,10 +5502,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
 
     /**
      * @see #createAccessibilityNodeInfo()
-     *
-     * @hide
      */
-    public AccessibilityNodeInfo createAccessibilityNodeInfoInternal() {
+    AccessibilityNodeInfo createAccessibilityNodeInfoInternal() {
         AccessibilityNodeProvider provider = getAccessibilityNodeProvider();
         if (provider != null) {
             return provider.createAccessibilityNodeInfo(View.NO_ID);
@@ -5632,10 +5620,8 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
      * @see #onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo)
      *
      * Note: Called from the default {@link AccessibilityDelegate}.
-     *
-     * @hide
      */
-    public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
+    void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
         Rect bounds = mAttachInfo.mTmpInvalRect;
 
         getDrawingRect(bounds);
@@ -8097,7 +8083,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     *
     * Note: Called from the default {@link AccessibilityDelegate}.
     *
-    * @hide
+    * @hide Until we've refactored all accessibility delegation methods.
     */
     public boolean performAccessibilityActionInternal(int action, Bundle arguments) {
         if (isNestedScrollingEnabled()

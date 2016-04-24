@@ -276,8 +276,8 @@ public class ListMenuItemView extends LinearLayout implements MenuView.ItemView 
     }
 
     @Override
-    public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfoInternal(info);
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
 
         if (mItemData != null && mItemData.hasSubMenu()) {
             info.setCanOpenPopup(true);

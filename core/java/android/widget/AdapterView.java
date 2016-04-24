@@ -929,9 +929,8 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         }
     }
 
-    /** @hide */
     @Override
-    public boolean dispatchPopulateAccessibilityEventInternal(AccessibilityEvent event) {
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         View selectedView = getSelectedView();
         if (selectedView != null && selectedView.getVisibility() == VISIBLE
                 && selectedView.dispatchPopulateAccessibilityEvent(event)) {
@@ -940,10 +939,9 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         return false;
     }
 
-    /** @hide */
     @Override
-    public boolean onRequestSendAccessibilityEventInternal(View child, AccessibilityEvent event) {
-        if (super.onRequestSendAccessibilityEventInternal(child, event)) {
+    public boolean onRequestSendAccessibilityEvent(View child, AccessibilityEvent event) {
+        if (super.onRequestSendAccessibilityEvent(child, event)) {
             // Add a record for ourselves as well.
             AccessibilityEvent record = AccessibilityEvent.obtain();
             onInitializeAccessibilityEvent(record);
@@ -955,10 +953,9 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         return false;
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfoInternal(info);
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
         info.setClassName(AdapterView.class.getName());
         info.setScrollable(isScrollableForAccessibility());
         View selectedView = getSelectedView();
@@ -967,10 +964,9 @@ public abstract class AdapterView<T extends Adapter> extends ViewGroup {
         }
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onInitializeAccessibilityEventInternal(event);
+    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
         event.setClassName(AdapterView.class.getName());
         event.setScrollable(isScrollableForAccessibility());
         View selectedView = getSelectedView();

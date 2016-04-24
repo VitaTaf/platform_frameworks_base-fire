@@ -8380,10 +8380,9 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /** @hide */
     @Override
-    public void onPopulateAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onPopulateAccessibilityEventInternal(event);
+    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
+        super.onPopulateAccessibilityEvent(event);
 
         final boolean isPassword = hasPasswordTransformationMethod();
         if (!isPassword || shouldSpeakPasswordsForAccessibility()) {
@@ -8404,10 +8403,9 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
                 UserHandle.USER_CURRENT_OR_SELF) == 1);
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onInitializeAccessibilityEventInternal(event);
+    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
 
         event.setClassName(TextView.class.getName());
         final boolean isPassword = hasPasswordTransformationMethod();
@@ -8420,10 +8418,9 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfoInternal(info);
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
 
         info.setClassName(TextView.class.getName());
         final boolean isPassword = hasPasswordTransformationMethod();
@@ -8581,16 +8578,15 @@ public class TextView extends View implements ViewTreeObserver.OnPreDrawListener
         }
     }
 
-    /** @hide */
     @Override
-    public void sendAccessibilityEventInternal(int eventType) {
+    public void sendAccessibilityEvent(int eventType) {
         // Do not send scroll events since first they are not interesting for
         // accessibility and second such events a generated too frequently.
         // For details see the implementation of bringTextIntoView().
         if (eventType == AccessibilityEvent.TYPE_VIEW_SCROLLED) {
             return;
         }
-        super.sendAccessibilityEventInternal(eventType);
+        super.sendAccessibilityEvent(eventType);
     }
 
     /**

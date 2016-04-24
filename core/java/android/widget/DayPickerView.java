@@ -459,10 +459,9 @@ class DayPickerView extends ListView implements AbsListView.OnScrollListener {
         mYearFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
     }
 
-    /** @hide */
     @Override
-    public void onInitializeAccessibilityEventInternal(AccessibilityEvent event) {
-        super.onInitializeAccessibilityEventInternal(event);
+    public void onInitializeAccessibilityEvent(AccessibilityEvent event) {
+        super.onInitializeAccessibilityEvent(event);
         event.setItemCount(-1);
     }
 
@@ -477,26 +476,22 @@ class DayPickerView extends ListView implements AbsListView.OnScrollListener {
     /**
      * Necessary for accessibility, to ensure we support "scrolling" forward and backward
      * in the month list.
-     *
-     * @hide
      */
     @Override
-    public void onInitializeAccessibilityNodeInfoInternal(AccessibilityNodeInfo info) {
-        super.onInitializeAccessibilityNodeInfoInternal(info);
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
         info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD);
         info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD);
     }
 
     /**
      * When scroll forward/backward events are received, announce the newly scrolled-to month.
-     *
-     * @hide
      */
     @Override
-    public boolean performAccessibilityActionInternal(int action, Bundle arguments) {
+    public boolean performAccessibilityAction(int action, Bundle arguments) {
         if (action != AccessibilityNodeInfo.ACTION_SCROLL_FORWARD &&
                 action != AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD) {
-            return super.performAccessibilityActionInternal(action, arguments);
+            return super.performAccessibilityAction(action, arguments);
         }
 
         // Figure out what month is showing.
