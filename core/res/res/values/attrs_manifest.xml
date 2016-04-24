@@ -1016,10 +1016,6 @@
          multi-window device where there can be multiple activities of various sizes on the screen
          at the same time.
 
-         <p>The default value is <code>false</code> for applications with
-         <code>targetSdkVersion</code> lesser than {@link android.os.Build.VERSION_CODE#MNC} and
-         <code>true</code> otherwise.
-
          <p>NOTE: A task's root activity value is applied to all additional activities launched in
          the task. That is if the root activity of a task is resizeable then the system will treat
          all other activities in the task as resizeable and will not if the root activity isn't
