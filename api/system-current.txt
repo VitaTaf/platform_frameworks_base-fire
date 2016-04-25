@@ -1080,7 +1080,7 @@ package android {
     field public static final int resizeClip = 16843983; // 0x10104cf
     field public static final int resizeMode = 16843619; // 0x1010363
     field public static final int resizeable = 16843405; // 0x101028d
-    field public static final int resizeableActivity = 16843995; // 0x10104db
+    field public static final int resizeableActivity = 16843990; // 0x10104d6
     field public static final int resource = 16842789; // 0x1010025
     field public static final int restoreAnyVersion = 16843450; // 0x10102ba
     field public static final deprecated int restoreNeedsApplication = 16843421; // 0x101029d
@@ -2484,6 +2484,7 @@ package android {
     field public static final int Widget_Material_Button_Borderless = 16974425; // 0x1030259
     field public static final int Widget_Material_Button_Borderless_Colored = 16974426; // 0x103025a
     field public static final int Widget_Material_Button_Borderless_Small = 16974427; // 0x103025b
+    field public static final int Widget_Material_Button_Colored = 16974547; // 0x10302d3
     field public static final int Widget_Material_Button_Inset = 16974428; // 0x103025c
     field public static final int Widget_Material_Button_Small = 16974429; // 0x103025d
     field public static final int Widget_Material_Button_Toggle = 16974430; // 0x103025e
@@ -7385,6 +7386,8 @@ package android.content {
     method public abstract java.io.File getCacheDir();
     method public abstract java.lang.ClassLoader getClassLoader();
     method public abstract java.io.File getCodeCacheDir();
+    method public final int getColor(int);
+    method public final android.content.res.ColorStateList getColorStateList(int);
     method public abstract android.content.ContentResolver getContentResolver();
     method public abstract java.io.File getDatabasePath(java.lang.String);
     method public abstract java.io.File getDir(java.lang.String, int);
@@ -9382,7 +9385,10 @@ package android.content.res {
 
   public class ColorStateList implements android.os.Parcelable {
     ctor public ColorStateList(int[][], int[]);
-    method public static android.content.res.ColorStateList createFromXml(android.content.res.Resources, org.xmlpull.v1.XmlPullParser) throws java.io.IOException, org.xmlpull.v1.XmlPullParserException;
+    method public void applyTheme(android.content.res.Resources.Theme);
+    method public boolean canApplyTheme();
+    method public static deprecated android.content.res.ColorStateList createFromXml(android.content.res.Resources, org.xmlpull.v1.XmlPullParser) throws java.io.IOException, org.xmlpull.v1.XmlPullParserException;
+    method public static android.content.res.ColorStateList createFromXml(android.content.res.Resources, org.xmlpull.v1.XmlPullParser, android.content.res.Resources.Theme) throws java.io.IOException, org.xmlpull.v1.XmlPullParserException;
     method public int describeContents();
     method public int getColorForState(int[], int);
     method public int getDefaultColor();
@@ -9512,8 +9518,10 @@ package android.content.res {
     method public android.content.res.XmlResourceParser getAnimation(int) throws android.content.res.Resources.NotFoundException;
     method public final android.content.res.AssetManager getAssets();
     method public boolean getBoolean(int) throws android.content.res.Resources.NotFoundException;
-    method public int getColor(int) throws android.content.res.Resources.NotFoundException;
-    method public android.content.res.ColorStateList getColorStateList(int) throws android.content.res.Resources.NotFoundException;
+    method public deprecated int getColor(int) throws android.content.res.Resources.NotFoundException;
+    method public int getColor(int, android.content.res.Resources.Theme) throws android.content.res.Resources.NotFoundException;
+    method public deprecated android.content.res.ColorStateList getColorStateList(int) throws android.content.res.Resources.NotFoundException;
+    method public android.content.res.ColorStateList getColorStateList(int, android.content.res.Resources.Theme) throws android.content.res.Resources.NotFoundException;
     method public android.content.res.Configuration getConfiguration();
     method public float getDimension(int) throws android.content.res.Resources.NotFoundException;
     method public int getDimensionPixelOffset(int) throws android.content.res.Resources.NotFoundException;
@@ -35606,6 +35614,7 @@ package android.view {
     method public android.view.animation.Animation getAnimation();
     method public android.os.IBinder getApplicationWindowToken();
     method public android.graphics.drawable.Drawable getBackground();
+    method public int getBackgroundColor();
     method public android.content.res.ColorStateList getBackgroundTintList();
     method public android.graphics.PorterDuff.Mode getBackgroundTintMode();
     method public int getBaseline();
@@ -40484,9 +40493,11 @@ package android.widget {
     ctor public PopupMenu(android.content.Context, android.view.View, int, int, int);
     method public void dismiss();
     method public android.view.View.OnTouchListener getDragToOpenListener();
+    method public int getGravity();
     method public android.view.Menu getMenu();
     method public android.view.MenuInflater getMenuInflater();
     method public void inflate(int);
+    method public void setGravity(int);
     method public void setOnDismissListener(android.widget.PopupMenu.OnDismissListener);
     method public void setOnMenuItemClickListener(android.widget.PopupMenu.OnMenuItemClickListener);
     method public void show();
@@ -40519,6 +40530,7 @@ package android.widget {
     method public int getInputMethodMode();
     method public int getMaxAvailableHeight(android.view.View);
     method public int getMaxAvailableHeight(android.view.View, int);
+    method public boolean getOverlapAnchor();
     method public int getSoftInputMode();
     method public int getWidth();
     method public boolean isAboveAnchor();
@@ -40543,6 +40555,7 @@ package android.widget {
     method public void setInputMethodMode(int);
     method public void setOnDismissListener(android.widget.PopupWindow.OnDismissListener);
     method public void setOutsideTouchable(boolean);
+    method public void setOverlapAnchor(boolean);
     method public void setSoftInputMode(int);
     method public void setSplitTouchEnabled(boolean);
     method public void setTouchInterceptor(android.view.View.OnTouchListener);
