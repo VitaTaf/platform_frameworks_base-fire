@@ -27,6 +27,11 @@ import android.media.session.MediaSessionLegacyHelper;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.view.View;
+import android.view.HapticFeedbackConstants;
+import android.view.FallbackEventHandler;
+import android.view.KeyEvent;
 
 /**
  * @hide
