@@ -23,8 +23,6 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_ACTIVITY_TASK_ON_HOME;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.android.server.am.ActivityManagerDebugConfig.*;
-import static com.android.server.am.ActivityManagerService.DEBUG_CONFIGURATION;
-import static com.android.server.am.ActivityManagerService.DEBUG_FOCUS;
 import static com.android.server.am.ActivityManagerService.DEBUG_PAUSE;
 import static com.android.server.am.ActivityManagerService.DEBUG_RECENTS;
 import static com.android.server.am.ActivityManagerService.DEBUG_RESULTS;
@@ -117,6 +115,8 @@ import java.util.List;
 
 public final class ActivityStackSupervisor implements DisplayListener {
     private static final String TAG = TAG_WITH_CLASS_NAME ? "ActivityStackSupervisor" : TAG_AM;
+    private static final String TAG_CONFIGURATION = TAG + POSTFIX_CONFIGURATION;
+    private static final String TAG_FOCUS = TAG + POSTFIX_FOCUS;
 
     static final boolean DEBUG = DEBUG_ALL || false;
     static final boolean DEBUG_ADD_REMOVE = DEBUG || false;
@@ -893,7 +893,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
                 stack = container.mStack;
             }
             stack.mConfigWillChange = config != null && mService.mConfiguration.diff(config) != 0;
-            if (DEBUG_CONFIGURATION) Slog.v(TAG,
+            if (DEBUG_CONFIGURATION) Slog.v(TAG_CONFIGURATION,
                     "Starting activity when config will change = " + stack.mConfigWillChange);
 
             final long origId = Binder.clearCallingIdentity();
@@ -982,7 +982,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
                 mService.enforceCallingPermission(android.Manifest.permission.CHANGE_CONFIGURATION,
                         "updateConfiguration()");
                 stack.mConfigWillChange = false;
-                if (DEBUG_CONFIGURATION) Slog.v(TAG,
+                if (DEBUG_CONFIGURATION) Slog.v(TAG_CONFIGURATION,
                         "Updating to new configuration after starting activity.");
                 mService.updateConfigurationLocked(config, null, false, false);
             }
@@ -1560,10 +1560,11 @@ public final class ActivityStackSupervisor implements DisplayListener {
                 stack = task.stack;
                 if (stack.isOnHomeDisplay()) {
                     if (mFocusedStack != stack) {
-                        if (DEBUG_FOCUS || DEBUG_STACK) Slog.d(TAG, "computeStackFocus: Setting " +
-                                "focused stack to r=" + r + " task=" + task);
+                        if (DEBUG_FOCUS || DEBUG_STACK) Slog.d(TAG_FOCUS,
+                                "computeStackFocus: Setting " + "focused stack to r=" + r
+                                + " task=" + task);
                     } else {
-                        if (DEBUG_FOCUS || DEBUG_STACK) Slog.d(TAG,
+                        if (DEBUG_FOCUS || DEBUG_STACK) Slog.d(TAG_FOCUS,
                             "computeStackFocus: Focused stack already=" + mFocusedStack);
                     }
                 }
@@ -1579,7 +1580,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
 
             if (mFocusedStack != mHomeStack && (!newTask ||
                     mFocusedStack.mActivityContainer.isEligibleForNewTasks())) {
-                if (DEBUG_FOCUS || DEBUG_STACK) Slog.d(TAG,
+                if (DEBUG_FOCUS || DEBUG_STACK) Slog.d(TAG_FOCUS,
                         "computeStackFocus: Have a focused stack=" + mFocusedStack);
                 return mFocusedStack;
             }
@@ -1588,7 +1589,7 @@ public final class ActivityStackSupervisor implements DisplayListener {
             for (int stackNdx = homeDisplayStacks.size() - 1; stackNdx >= 0; --stackNdx) {
                 stack = homeDisplayStacks.get(stackNdx);
                 if (!stack.isHomeStack()) {
-                    if (DEBUG_FOCUS || DEBUG_STACK) Slog.d(TAG,
+                    if (DEBUG_FOCUS || DEBUG_STACK) Slog.d(TAG_FOCUS,
                             "computeStackFocus: Setting focused stack=" + stack);
                     return stack;
                 }
@@ -1596,8 +1597,8 @@ public final class ActivityStackSupervisor implements DisplayListener {
 
             // Need to create an app stack for this user.
             stack = createStackOnDisplay(getNextStackId(), Display.DEFAULT_DISPLAY);
-            if (DEBUG_FOCUS || DEBUG_STACK) Slog.d(TAG, "computeStackFocus: New stack r=" + r +
-                    " stackId=" + stack.mStackId);
+            if (DEBUG_FOCUS || DEBUG_STACK) Slog.d(TAG_FOCUS, "computeStackFocus: New stack r="
+                    + r + " stackId=" + stack.mStackId);
             return stack;
         }
         return mHomeStack;
