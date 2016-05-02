@@ -4660,8 +4660,7 @@ public class AudioService extends IAudioService.Stub {
         } else if (device == AudioSystem.DEVICE_OUT_DGTL_DOCK_HEADSET) {
             connType = AudioRoutesInfo.MAIN_DOCK_SPEAKERS;
             intent.setAction(AudioManager.ACTION_DIGITAL_AUDIO_DOCK_PLUG);
-        } else if (device == AudioSystem.DEVICE_OUT_HDMI ||
-                device == AudioSystem.DEVICE_OUT_HDMI_ARC) {
+        } else if (device == AudioSystem.DEVICE_OUT_HDMI) {
             connType = AudioRoutesInfo.MAIN_HDMI;
             configureHdmiPlugIntent(intent, state);
         }
@@ -4756,8 +4755,7 @@ public class AudioService extends IAudioService.Stub {
                 for (AudioPort port : ports) {
                     if (port instanceof AudioDevicePort) {
                         final AudioDevicePort devicePort = (AudioDevicePort) port;
-                        if (devicePort.type() == AudioManager.DEVICE_OUT_HDMI ||
-                                devicePort.type() == AudioManager.DEVICE_OUT_HDMI_ARC) {
+                        if (devicePort.type() == AudioManager.DEVICE_OUT_HDMI) {
                             // format the list of supported encodings
                             int[] formats = devicePort.formats();
                             if (formats.length > 0) {
