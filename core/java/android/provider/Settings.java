@@ -305,7 +305,7 @@ public final class Settings {
 
     /**
      * Activity Action: Show settings to allow configuration of
-     * cast endpoints.
+     * {@link android.media.routing.MediaRouteService media route providers}.
      * <p>
      * In some cases, a matching Activity may not exist, so ensure you
      * safeguard against this.
