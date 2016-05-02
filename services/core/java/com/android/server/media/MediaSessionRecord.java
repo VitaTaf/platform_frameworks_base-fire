@@ -28,9 +28,6 @@ import android.media.MediaDescription;
 import android.media.MediaMetadata;
 import android.media.Rating;
 import android.media.VolumeProvider;
-import android.media.routing.IMediaRouter;
-import android.media.routing.IMediaRouterDelegate;
-import android.media.routing.IMediaRouterStateCallback;
 import android.media.session.ISession;
 import android.media.session.ISessionCallback;
 import android.media.session.ISessionController;
@@ -1196,13 +1193,6 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
         @Override
         public boolean isTransportControlEnabled() {
             return MediaSessionRecord.this.isTransportControlEnabled();
-        }
-
-        @Override
-        public IMediaRouterDelegate createMediaRouterDelegate(
-                IMediaRouterStateCallback callback) {
-            // todo
-            return null;
         }
     }
 
