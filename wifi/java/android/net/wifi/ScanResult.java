@@ -16,6 +16,8 @@
 
 package android.net.wifi;
 
+import android.net.wifi.passpoint.WifiPasspointInfo;
+import android.net.wifi.passpoint.WifiPasspointManager;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -169,6 +171,12 @@ public class ScanResult implements Parcelable {
     public int distanceSdCm;
 
     /**
+     * Passpoint ANQP information. This is not fetched automatically.
+     * Use {@link WifiPasspointManager#requestAnqpInfo} to request ANQP info.
+     */
+    public WifiPasspointInfo passpoint;
+
+    /**
      * {@hide}
      */
     public final static int UNSPECIFIED = -1;
@@ -264,6 +272,7 @@ public class ScanResult implements Parcelable {
             distanceCm = source.distanceCm;
             distanceSdCm = source.distanceSdCm;
             seen = source.seen;
+            passpoint = source.passpoint;
             autoJoinStatus = source.autoJoinStatus;
             untrusted = source.untrusted;
             numConnection = source.numConnection;
@@ -303,6 +312,7 @@ public class ScanResult implements Parcelable {
         sb.append(", distanceSd: ").append((distanceSdCm != UNSPECIFIED ? distanceSdCm : "?")).
                 append("(cm)");
 
+        sb.append(", passpoint: ").append(passpoint != null ? "yes" : "no");
         if (autoJoinStatus != 0) {
             sb.append(", status: ").append(autoJoinStatus);
         }
@@ -336,6 +346,12 @@ public class ScanResult implements Parcelable {
         dest.writeInt(numUsage);
         dest.writeInt(numIpConfigFailures);
         dest.writeInt(isAutoJoinCandidate);
+        if (passpoint != null) {
+            dest.writeInt(1);
+            passpoint.writeToParcel(dest, flags);
+        } else {
+            dest.writeInt(0);
+        }
         if (informationElements != null) {
             dest.writeInt(informationElements.length);
             for (int i = 0; i < informationElements.length; i++) {
@@ -371,8 +387,14 @@ public class ScanResult implements Parcelable {
                 sr.untrusted = in.readInt() != 0;
                 sr.numConnection = in.readInt();
                 sr.numUsage = in.readInt();
+<<<<<<< HEAD
                 sr.numIpConfigFailures = in.readInt();
                 sr.isAutoJoinCandidate = in.readInt();
+=======
+                if (in.readInt() == 1) {
+                    sr.passpoint = WifiPasspointInfo.CREATOR.createFromParcel(in);
+                }
+>>>>>>> parent of 808079b... remove passpoint - DO NOT MERGE
                 int n = in.readInt();
                 if (n != 0) {
                     sr.informationElements = new InformationElement[n];
