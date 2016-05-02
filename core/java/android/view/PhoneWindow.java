@@ -3010,8 +3010,8 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
 
                             if (mStatusGuard == null) {
                                 mStatusGuard = new View(mContext);
-                                mStatusGuard.setBackgroundColor(mContext.getResources()
-                                        .getColor(R.color.input_method_navigation_guard));
+                                mStatusGuard.setBackgroundColor(mContext.getColor(
+                                        R.color.input_method_navigation_guard));
                                 addView(mStatusGuard, indexOfChild(mStatusColorViewState.view),
                                         new LayoutParams(LayoutParams.MATCH_PARENT,
                                                 mlp.topMargin, Gravity.START | Gravity.TOP));
@@ -3070,8 +3070,8 @@ public class PhoneWindow extends Window implements MenuBuilder.Callback {
                 // position the navigation guard view, creating it if necessary
                 if (mNavigationGuard == null) {
                     mNavigationGuard = new View(mContext);
-                    mNavigationGuard.setBackgroundColor(mContext.getResources()
-                            .getColor(R.color.input_method_navigation_guard));
+                    mNavigationGuard.setBackgroundColor(mContext.getColor(
+                            R.color.input_method_navigation_guard));
                     addView(mNavigationGuard, indexOfChild(mNavigationColorViewState.view),
                             new LayoutParams(LayoutParams.MATCH_PARENT,
                                     insets.getSystemWindowInsetBottom(),

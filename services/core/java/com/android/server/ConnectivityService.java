@@ -3180,7 +3180,7 @@ public class ConnectivityService extends IConnectivityManager.Stub
             notification.icon = icon;
             notification.flags = Notification.FLAG_AUTO_CANCEL;
             notification.tickerText = title;
-            notification.color = mContext.getResources().getColor(
+            notification.color = mContext.getColor(
                     com.android.internal.R.color.system_notification_accent_color);
             notification.setLatestEventInfo(mContext, title, details, notification.contentIntent);
             notification.contentIntent = intent;
