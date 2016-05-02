@@ -718,11 +718,6 @@ public class MediaSessionRecord implements IBinder.DeathRecipient {
         }
 
         @Override
-        public void setMediaRouter(IMediaRouter router) {
-            mHandler.post(MessageHandler.MSG_UPDATE_SESSION_STATE);
-        }
-
-        @Override
         public void setMediaButtonReceiver(PendingIntent pi) {
             mMediaButtonReceiver = pi;
         }
