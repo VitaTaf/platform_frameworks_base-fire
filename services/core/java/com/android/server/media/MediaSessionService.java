@@ -892,7 +892,7 @@ public class MediaSessionService extends SystemService implements Monitor {
                 try {
                     String packageName = getContext().getOpPackageName();
                     mAudioService.adjustSuggestedStreamVolume(direction, suggestedStream,
-                            flags, packageName);
+                            flags, packageName, TAG);
                 } catch (RemoteException e) {
                     Log.e(TAG, "Error adjusting default volume.", e);
                 }

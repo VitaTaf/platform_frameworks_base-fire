@@ -41,7 +41,7 @@ import android.view.KeyEvent;
 interface IAudioService {
 
     void adjustSuggestedStreamVolume(int direction, int suggestedStreamType, int flags,
-            String callingPackage);
+            String callingPackage, String caller);
 
     void adjustStreamVolume(int streamType, int direction, int flags, String callingPackage);
 
@@ -81,7 +81,7 @@ interface IAudioService {
 
     boolean shouldVibrate(int vibrateType);
 
-    void setMode(int mode, IBinder cb);
+    void setMode(int mode, IBinder cb, String callingPackage);
 
     int getMode();
 
@@ -182,7 +182,9 @@ interface IAudioService {
     IRingtonePlayer getRingtonePlayer();
     int getUiSoundsStreamType();
 
-    void setWiredDeviceConnectionState(int device, int state, String name);
+    void setWiredDeviceConnectionState(int device, int state, String name,
+            String caller);
+
     int setBluetoothA2dpDeviceConnectionState(in BluetoothDevice device, int state, int profile);
 
     AudioRoutesInfo startWatchingRoutes(in IAudioRoutesObserver observer);
@@ -197,7 +199,7 @@ interface IAudioService {
 
     boolean isStreamAffectedByMute(int streamType);
 
-    void disableSafeMediaVolume();
+    void disableSafeMediaVolume(String callingPackage);
 
     int setHdmiSystemAudioSupported(boolean on);
 

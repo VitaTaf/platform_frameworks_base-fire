@@ -4860,7 +4860,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KeyEvent.KEYCODE_VOLUME_UP:
                 try {
                     getAudioService().adjustSuggestedStreamVolume(AudioManager.ADJUST_RAISE,
-                            AudioManager.USE_DEFAULT_STREAM_TYPE, flags, pkgName);
+                            AudioManager.USE_DEFAULT_STREAM_TYPE, flags, pkgName, TAG);
                 } catch (RemoteException e) {
                     Log.e(TAG, "Error dispatching volume up in dispatchTvAudioEvent.", e);
                 }
@@ -4868,7 +4868,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KeyEvent.KEYCODE_VOLUME_DOWN:
                 try {
                     getAudioService().adjustSuggestedStreamVolume(AudioManager.ADJUST_LOWER,
-                            AudioManager.USE_DEFAULT_STREAM_TYPE, flags, pkgName);
+                            AudioManager.USE_DEFAULT_STREAM_TYPE, flags, pkgName, TAG);
                 } catch (RemoteException e) {
                     Log.e(TAG, "Error dispatching volume down in dispatchTvAudioEvent.", e);
                 }
@@ -4878,7 +4878,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     if (event.getRepeatCount() == 0) {
                         getAudioService().adjustSuggestedStreamVolume(
                                 AudioManager.ADJUST_TOGGLE_MUTE,
-                                AudioManager.USE_DEFAULT_STREAM_TYPE, flags, pkgName);
+                                AudioManager.USE_DEFAULT_STREAM_TYPE, flags, pkgName, TAG);
                     }
                 } catch (RemoteException e) {
                     Log.e(TAG, "Error dispatching mute in dispatchTvAudioEvent.", e);

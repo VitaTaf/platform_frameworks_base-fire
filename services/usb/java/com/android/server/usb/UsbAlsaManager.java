@@ -183,7 +183,7 @@ public final class UsbAlsaManager {
                 int device = (audioDevice == mAccessoryAudioDevice ?
                         AudioSystem.DEVICE_OUT_USB_ACCESSORY :
                         AudioSystem.DEVICE_OUT_USB_DEVICE);
-                mAudioService.setWiredDeviceConnectionState(device, state, params);
+                mAudioService.setWiredDeviceConnectionState(device, state, params, TAG);
             }
 
             // Capture Device
@@ -191,7 +191,7 @@ public final class UsbAlsaManager {
                int device = (audioDevice == mAccessoryAudioDevice ?
                         AudioSystem.DEVICE_IN_USB_ACCESSORY :
                         AudioSystem.DEVICE_IN_USB_DEVICE);
-                mAudioService.setWiredDeviceConnectionState(device, state, params);
+                mAudioService.setWiredDeviceConnectionState(device, state, params, TAG);
             }
         } catch (RemoteException e) {
             Slog.e(TAG, "RemoteException in setWiredDeviceConnectionState");
