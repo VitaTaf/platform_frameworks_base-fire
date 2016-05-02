@@ -387,14 +387,11 @@ public class ScanResult implements Parcelable {
                 sr.untrusted = in.readInt() != 0;
                 sr.numConnection = in.readInt();
                 sr.numUsage = in.readInt();
-<<<<<<< HEAD
                 sr.numIpConfigFailures = in.readInt();
                 sr.isAutoJoinCandidate = in.readInt();
-=======
                 if (in.readInt() == 1) {
                     sr.passpoint = WifiPasspointInfo.CREATOR.createFromParcel(in);
                 }
->>>>>>> parent of 808079b... remove passpoint - DO NOT MERGE
                 int n = in.readInt();
                 if (n != 0) {
                     sr.informationElements = new InformationElement[n];
