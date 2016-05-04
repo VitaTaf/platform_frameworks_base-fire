@@ -23,6 +23,7 @@ import android.view.Surface;
 
 import java.util.Arrays;
 
+import libcore.util.EmptyArray;
 import libcore.util.Objects;
 
 /**
@@ -136,19 +137,14 @@ final class DisplayDeviceInfo {
     public int height;
 
     /**
-     * The active mode of the display.
+     * The refresh rate of the display, in frames per second.
      */
-    public int modeId;
+    public float refreshRate;
 
     /**
-     * The default mode of the display.
+     * The supported refresh rates of the display at the current resolution in frames per second.
      */
-    public int defaultModeId;
-
-    /**
-     * The supported modes of the display.
-     */
-    public Display.Mode[] supportedModes = Display.Mode.EMPTY_ARRAY;
+    public float[] supportedRefreshRates = EmptyArray.FLOAT;
 
     /**
      * The nominal apparent density of the display in DPI used for layout calculations.
@@ -268,9 +264,8 @@ final class DisplayDeviceInfo {
                 || !Objects.equal(uniqueId, other.uniqueId)
                 || width != other.width
                 || height != other.height
-                || modeId != other.modeId
-                || defaultModeId != other.defaultModeId
-                || !Arrays.equals(supportedModes, other.supportedModes)
+                || refreshRate != other.refreshRate
+                || !Arrays.equals(supportedRefreshRates, other.supportedRefreshRates)
                 || densityDpi != other.densityDpi
                 || xDpi != other.xDpi
                 || yDpi != other.yDpi
@@ -298,9 +293,8 @@ final class DisplayDeviceInfo {
         uniqueId = other.uniqueId;
         width = other.width;
         height = other.height;
-        modeId = other.modeId;
-        defaultModeId = other.defaultModeId;
-        supportedModes = other.supportedModes;
+        refreshRate = other.refreshRate;
+        supportedRefreshRates = other.supportedRefreshRates;
         densityDpi = other.densityDpi;
         xDpi = other.xDpi;
         yDpi = other.yDpi;
@@ -323,9 +317,8 @@ final class DisplayDeviceInfo {
         sb.append("DisplayDeviceInfo{\"");
         sb.append(name).append("\": uniqueId=\"").append(uniqueId).append("\", ");
         sb.append(width).append(" x ").append(height);
-        sb.append(", modeId ").append(modeId);
-        sb.append(", defaultModeId ").append(defaultModeId);
-        sb.append(", supportedModes ").append(Arrays.toString(supportedModes));
+        sb.append(", ").append(refreshRate).append(" fps");
+        sb.append(", supportedRefreshRates ").append(Arrays.toString(supportedRefreshRates));
         sb.append(", density ").append(densityDpi);
         sb.append(", ").append(xDpi).append(" x ").append(yDpi).append(" dpi");
         sb.append(", appVsyncOff ").append(appVsyncOffsetNanos);

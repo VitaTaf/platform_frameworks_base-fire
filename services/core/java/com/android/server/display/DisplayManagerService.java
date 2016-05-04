@@ -842,7 +842,7 @@ public final class DisplayManagerService extends SystemService {
     }
 
     private void setDisplayPropertiesInternal(int displayId, boolean hasContent,
-            float requestedRefreshRate, int requestedModeId, boolean inTraversal) {
+            float requestedRefreshRate, boolean inTraversal) {
         synchronized (mSyncRoot) {
             LogicalDisplay display = mLogicalDisplays.get(displayId);
             if (display == null) {
@@ -857,17 +857,12 @@ public final class DisplayManagerService extends SystemService {
                 display.setHasContentLocked(hasContent);
                 scheduleTraversalLocked(inTraversal);
             }
-            if (requestedModeId == 0 && requestedRefreshRate != 0) {
-                // Scan supported modes returned by display.getInfo() to find a mode with the same
-                // size as the default display mode but with the specified refresh rate instead.
-                requestedModeId = display.getDisplayInfoLocked().findDefaultModeByRefreshRate(
-                        requestedRefreshRate);
-            }
-            if (display.getRequestedModeIdLocked() != requestedModeId) {
+            if (display.getRequestedRefreshRateLocked() != requestedRefreshRate) {
                 if (DEBUG) {
-                    Slog.d(TAG, "Display " + displayId + " switching to mode " + requestedModeId);
+                    Slog.d(TAG, "Display " + displayId + " has requested a new refresh rate: "
+                            + requestedRefreshRate + "fps");
                 }
-                display.setRequestedModeIdLocked(requestedModeId);
+                display.setRequestedRefreshRateLocked(requestedRefreshRate);
                 scheduleTraversalLocked(inTraversal);
             }
         }
@@ -1569,9 +1564,8 @@ public final class DisplayManagerService extends SystemService {
 
         @Override
         public void setDisplayProperties(int displayId, boolean hasContent,
-                float requestedRefreshRate, int requestedMode, boolean inTraversal) {
-            setDisplayPropertiesInternal(displayId, hasContent, requestedRefreshRate,
-                    requestedMode, inTraversal);
+                float requestedRefreshRate, boolean inTraversal) {
+            setDisplayPropertiesInternal(displayId, hasContent, requestedRefreshRate, inTraversal);
         }
 
         @Override

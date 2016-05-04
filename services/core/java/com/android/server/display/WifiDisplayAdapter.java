@@ -583,7 +583,6 @@ final class WifiDisplayAdapter extends DisplayAdapter {
         private final float mRefreshRate;
         private final int mFlags;
         private final String mAddress;
-        private final Display.Mode mMode;
 
         private Surface mSurface;
         private DisplayDeviceInfo mInfo;
@@ -599,7 +598,6 @@ final class WifiDisplayAdapter extends DisplayAdapter {
             mFlags = flags;
             mAddress = address;
             mSurface = surface;
-            mMode = createMode(width, height, refreshRate);
         }
 
         public void destroyLocked() {
@@ -630,9 +628,8 @@ final class WifiDisplayAdapter extends DisplayAdapter {
                 mInfo.uniqueId = getUniqueId();
                 mInfo.width = mWidth;
                 mInfo.height = mHeight;
-                mInfo.modeId = mMode.getModeId();
-                mInfo.defaultModeId = mMode.getModeId();
-                mInfo.supportedModes = new Display.Mode[] { mMode };
+                mInfo.refreshRate = mRefreshRate;
+                mInfo.supportedRefreshRates = new float[] { mRefreshRate };
                 mInfo.presentationDeadlineNanos = 1000000000L / (int) mRefreshRate; // 1 frame
                 mInfo.flags = mFlags;
                 mInfo.type = Display.TYPE_WIFI;

@@ -125,13 +125,11 @@ public abstract class DisplayManagerInternal {
      * mirroring.
      * @param requestedRefreshRate The preferred refresh rate for the top-most visible window that
      * has a preference.
-     * @param requestedModeId The preferred mode id for the top-most visible window that has a
-     * preference.
      * @param inTraversal True if called from WindowManagerService during a window traversal
      * prior to call to performTraversalInTransactionFromWindowManager.
      */
     public abstract void setDisplayProperties(int displayId, boolean hasContent,
-            float requestedRefreshRate, int requestedModeId, boolean inTraversal);
+            float requestedRefreshRate, boolean inTraversal);
 
     /**
      * Applies an offset to the contents of a display, for example to avoid burn-in.

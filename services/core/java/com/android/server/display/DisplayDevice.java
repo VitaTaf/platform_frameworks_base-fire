@@ -19,7 +19,6 @@ package com.android.server.display;
 import android.graphics.Rect;
 import android.hardware.display.DisplayViewport;
 import android.os.IBinder;
-import android.view.Display;
 import android.view.Surface;
 import android.view.SurfaceControl;
 
@@ -133,9 +132,9 @@ abstract class DisplayDevice {
     }
 
     /**
-     * Sets the mode, if supported.
+     * Sets the refresh rate, if supported.
      */
-    public void requestModeInTransactionLocked(int id) {
+    public void requestRefreshRateLocked(float refreshRate) {
     }
 
     /**

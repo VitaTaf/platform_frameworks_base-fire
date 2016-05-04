@@ -20,11 +20,11 @@ import android.content.res.CompatibilityInfo;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.ArraySet;
 import android.util.DisplayMetrics;
 
 import java.util.Arrays;
 
+import libcore.util.EmptyArray;
 import libcore.util.Objects;
 
 /**
@@ -155,19 +155,18 @@ public final class DisplayInfo implements Parcelable {
     public int rotation;
 
     /**
-     * The active display mode.
+     * The refresh rate of this display in frames per second.
+     * <p>
+     * The value of this field is indeterminate if the logical display is presented on
+     * more than one physical display.
+     * </p>
      */
-    public int modeId;
+    public float refreshRate;
 
     /**
-     * The default display mode.
+     * The supported refresh rates of this display at the current resolution in frames per second.
      */
-    public int defaultModeId;
-
-    /**
-     * The supported modes of this display.
-     */
-    public Display.Mode[] supportedModes = Display.Mode.EMPTY_ARRAY;
+    public float[] supportedRefreshRates = EmptyArray.FLOAT;
 
     /**
      * The logical display density which is the basis for density-independent
@@ -277,8 +276,7 @@ public final class DisplayInfo implements Parcelable {
                 && overscanRight == other.overscanRight
                 && overscanBottom == other.overscanBottom
                 && rotation == other.rotation
-                && modeId == other.modeId
-                && defaultModeId == other.defaultModeId
+                && refreshRate == other.refreshRate
                 && logicalDensityDpi == other.logicalDensityDpi
                 && physicalXDpi == other.physicalXDpi
                 && physicalYDpi == other.physicalYDpi
@@ -314,9 +312,9 @@ public final class DisplayInfo implements Parcelable {
         overscanRight = other.overscanRight;
         overscanBottom = other.overscanBottom;
         rotation = other.rotation;
-        modeId = other.modeId;
-        defaultModeId = other.defaultModeId;
-        supportedModes = Arrays.copyOf(other.supportedModes, other.supportedModes.length);
+        refreshRate = other.refreshRate;
+        supportedRefreshRates = Arrays.copyOf(
+                other.supportedRefreshRates, other.supportedRefreshRates.length);
         logicalDensityDpi = other.logicalDensityDpi;
         physicalXDpi = other.physicalXDpi;
         physicalYDpi = other.physicalYDpi;
@@ -346,13 +344,8 @@ public final class DisplayInfo implements Parcelable {
         overscanRight = source.readInt();
         overscanBottom = source.readInt();
         rotation = source.readInt();
-        modeId = source.readInt();
-        defaultModeId = source.readInt();
-        int nModes = source.readInt();
-        supportedModes = new Display.Mode[nModes];
-        for (int i = 0; i < nModes; i++) {
-            supportedModes[i] = Display.Mode.CREATOR.createFromParcel(source);
-        }
+        refreshRate = source.readFloat();
+        supportedRefreshRates = source.createFloatArray();
         logicalDensityDpi = source.readInt();
         physicalXDpi = source.readFloat();
         physicalYDpi = source.readFloat();
@@ -384,12 +377,8 @@ public final class DisplayInfo implements Parcelable {
         dest.writeInt(overscanRight);
         dest.writeInt(overscanBottom);
         dest.writeInt(rotation);
-        dest.writeInt(modeId);
-        dest.writeInt(defaultModeId);
-        dest.writeInt(supportedModes.length);
-        for (int i = 0; i < supportedModes.length; i++) {
-            supportedModes[i].writeToParcel(dest, flags);
-        }
+        dest.writeFloat(refreshRate);
+        dest.writeFloatArray(supportedRefreshRates);
         dest.writeInt(logicalDensityDpi);
         dest.writeFloat(physicalXDpi);
         dest.writeFloat(physicalYDpi);
@@ -404,61 +393,6 @@ public final class DisplayInfo implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
-    }
-
-    public Display.Mode getMode() {
-        return findMode(modeId);
-    }
-
-    public Display.Mode getDefaultMode() {
-        return findMode(defaultModeId);
-    }
-
-    private Display.Mode findMode(int id) {
-        for (int i = 0; i < supportedModes.length; i++) {
-            if (supportedModes[i].getModeId() == id) {
-                return supportedModes[i];
-            }
-        }
-        throw new IllegalStateException("Unable to locate mode " + id);
-    }
-
-    /**
-     * Returns the id of the "default" mode with the given refresh rate, or {@code 0} if no suitable
-     * mode could be found.
-     */
-    public int findDefaultModeByRefreshRate(float refreshRate) {
-        Display.Mode[] modes = supportedModes;
-        Display.Mode defaultMode = getDefaultMode();
-        for (int i = 0; i < modes.length; i++) {
-            if (modes[i].matches(
-                    defaultMode.getPhysicalWidth(), defaultMode.getPhysicalHeight(), refreshRate)) {
-                return modes[i].getModeId();
-            }
-        }
-        return 0;
-    }
-
-    /**
-     * Returns the list of supported refresh rates in the default mode.
-     */
-    public float[] getDefaultRefreshRates() {
-        Display.Mode[] modes = supportedModes;
-        ArraySet<Float> rates = new ArraySet<>();
-        Display.Mode defaultMode = getDefaultMode();
-        for (int i = 0; i < modes.length; i++) {
-            Display.Mode mode = modes[i];
-            if (mode.getPhysicalWidth() == defaultMode.getPhysicalWidth()
-                    && mode.getPhysicalHeight() == defaultMode.getPhysicalHeight()) {
-                rates.add(mode.getRefreshRate());
-            }
-        }
-        float[] result = new float[rates.size()];
-        int i = 0;
-        for (Float rate : rates) {
-            result[i++] = rate;
-        }
-        return result;
     }
 
     public void getAppMetrics(DisplayMetrics outMetrics) {
@@ -548,12 +482,10 @@ public final class DisplayInfo implements Parcelable {
         sb.append(smallestNominalAppWidth);
         sb.append(" x ");
         sb.append(smallestNominalAppHeight);
-        sb.append(", mode ");
-        sb.append(modeId);
-        sb.append(", defaultMode ");
-        sb.append(defaultModeId);
-        sb.append(", modes ");
-        sb.append(Arrays.toString(supportedModes));
+        sb.append(", ");
+        sb.append(refreshRate);
+        sb.append(" fps, supportedRefreshRates ");
+        sb.append(Arrays.toString(supportedRefreshRates));
         sb.append(", rotation ");
         sb.append(rotation);
         sb.append(", density ");
