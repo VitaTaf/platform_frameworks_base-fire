@@ -16,11 +16,14 @@
 
 package com.android.server.display;
 
+import com.android.server.lights.Light;
+
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
+import android.os.Trace;
 import android.util.FloatProperty;
 import android.util.IntProperty;
 import android.util.Slog;
@@ -54,6 +57,7 @@ final class DisplayPowerState {
     private final Handler mHandler;
     private final Choreographer mChoreographer;
     private final DisplayBlanker mBlanker;
+    private final Light mBacklight;
     private final ColorFade mColorFade;
     private final PhotonicModulator mPhotonicModulator;
 
@@ -69,11 +73,12 @@ final class DisplayPowerState {
 
     private Runnable mCleanListener;
 
-    public DisplayPowerState(DisplayBlanker blanker, ColorFade colorFade) {
+    public DisplayPowerState(DisplayBlanker blanker, Light backlight, ColorFade electronBeam) {
         mHandler = new Handler(true /*async*/);
         mChoreographer = Choreographer.getInstance();
         mBlanker = blanker;
-        mColorFade = colorFade;
+        mBacklight = backlight;
+        mColorFade = electronBeam;
         mPhotonicModulator = new PhotonicModulator();
         mPhotonicModulator.start();
 
@@ -407,7 +412,35 @@ final class DisplayPowerState {
                     Slog.d(TAG, "Updating screen state: state="
                             + Display.stateToString(state) + ", backlight=" + backlight);
                 }
-                mBlanker.requestDisplayState(state, backlight);
+                boolean suspending = Display.isSuspendedState(state);
+                if (stateChanged && !suspending) {
+                    requestDisplayState(state);
+                }
+                if (backlightChanged) {
+                    setBrightness(backlight);
+                }
+                if (stateChanged && suspending) {
+                    requestDisplayState(state);
+                }
+            }
+        }
+
+        private void requestDisplayState(int state) {
+            Trace.traceBegin(Trace.TRACE_TAG_POWER, "requestDisplayState("
+                    + Display.stateToString(state) + ")");
+            try {
+                mBlanker.requestDisplayState(state);
+            } finally {
+                Trace.traceEnd(Trace.TRACE_TAG_POWER);
+            }
+        }
+
+        private void setBrightness(int backlight) {
+            Trace.traceBegin(Trace.TRACE_TAG_POWER, "setBrightness(" + backlight + ")");
+            try {
+                mBacklight.setBrightness(backlight);
+            } finally {
+                Trace.traceEnd(Trace.TRACE_TAG_POWER);
             }
         }
     }
