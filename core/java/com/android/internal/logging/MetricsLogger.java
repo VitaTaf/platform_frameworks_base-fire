@@ -30,13 +30,6 @@ public class MetricsLogger implements MetricsConstants {
 
     public static final int NOTIFICATION_ZEN_MODE_SCHEDULE_RULE = 144;
     public static final int NOTIFICATION_ZEN_MODE_EXTERNAL_RULE = 145;
-    public static final int VOLUME_DIALOG = 207;
-    public static final int VOLUME_DIALOG_DETAILS = 208;
-    public static final int ACTION_VOLUME_SLIDER = 209;
-    public static final int ACTION_VOLUME_STREAM = 210;
-    public static final int ACTION_VOLUME_KEY = 211;
-    public static final int ACTION_VOLUME_ICON = 212;
-    public static final int ACTION_RINGER_MODE = 213;
 
     public static void visible(Context context, int category) throws IllegalArgumentException {
         if (Build.IS_DEBUGGABLE && category == VIEW_UNKNOWN) {

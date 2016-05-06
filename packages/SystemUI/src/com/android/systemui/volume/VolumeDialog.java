@@ -370,7 +370,7 @@ public class VolumeDialog {
         row.icon.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Events.writeEvent(mContext, Events.EVENT_ICON_CLICK, row.stream, row.iconState);
+                Events.writeEvent(Events.EVENT_ICON_CLICK, row.stream, row.iconState);
                 mController.setActiveStream(row.stream);
                 if (row.stream == AudioManager.STREAM_RING) {
                     final boolean hasVibrator = mController.hasVibrator();
@@ -418,7 +418,7 @@ public class VolumeDialog {
         if (mShowing) return;
         mShowing = true;
         mDialog.show();
-        Events.writeEvent(mContext, Events.EVENT_SHOW_DIALOG, reason, mKeyguard.isKeyguardLocked());
+        Events.writeEvent(Events.EVENT_SHOW_DIALOG, reason, mKeyguard.isKeyguardLocked());
         mController.notifyVisible(true);
     }
 
@@ -445,7 +445,7 @@ public class VolumeDialog {
         if (!mShowing) return;
         mShowing = false;
         mDialog.dismiss();
-        Events.writeEvent(mContext, Events.EVENT_DISMISS_DIALOG, reason);
+        Events.writeEvent(Events.EVENT_DISMISS_DIALOG, reason);
         setExpandedH(false);
         mController.notifyVisible(false);
         synchronized (mSafetyWarningLock) {
@@ -843,7 +843,7 @@ public class VolumeDialog {
         public void onClick(View v) {
             if (mExpanding) return;
             final boolean newExpand = !mExpanded;
-            Events.writeEvent(mContext, Events.EVENT_EXPAND, newExpand);
+            Events.writeEvent(Events.EVENT_EXPAND, v);
             setExpandedH(newExpand);
         }
     };
@@ -854,7 +854,7 @@ public class VolumeDialog {
             mSettingsButton.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Events.writeEvent(mContext, Events.EVENT_SETTINGS_CLICK);
+                    Events.writeEvent(Events.EVENT_SETTINGS_CLICK);
                     if (mCallback != null) {
                         mCallback.onSettingsClicked();
                     }
@@ -942,8 +942,7 @@ public class VolumeDialog {
                 if (mRow.requestedLevel != userLevel) {
                     mController.setStreamVolume(mRow.stream, userLevel);
                     mRow.requestedLevel = userLevel;
-                    Events.writeEvent(mContext, Events.EVENT_TOUCH_LEVEL_CHANGED, mRow.stream,
-                            userLevel);
+                    Events.writeEvent(Events.EVENT_TOUCH_LEVEL_CHANGED, mRow.stream, userLevel);
                 }
             }
         }
@@ -961,7 +960,6 @@ public class VolumeDialog {
             mRow.tracking = false;
             mRow.userAttempt = SystemClock.uptimeMillis();
             int userLevel = getImpliedLevel(seekBar, seekBar.getProgress());
-            Events.writeEvent(mContext, Events.EVENT_TOUCH_LEVEL_DONE, mRow.stream, userLevel);
             if (mRow.ss.level != userLevel) {
                 mHandler.sendMessageDelayed(mHandler.obtainMessage(H.RECHECK, mRow),
                         USER_ATTEMPT_GRACE_PERIOD);
