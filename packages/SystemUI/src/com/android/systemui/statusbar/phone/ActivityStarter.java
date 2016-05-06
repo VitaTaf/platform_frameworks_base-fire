@@ -27,4 +27,5 @@ import android.content.Intent;
 public interface ActivityStarter {
     void startPendingIntentDismissingKeyguard(PendingIntent intent);
     public void startActivity(Intent intent, boolean dismissShade);
+    void preventNextAnimation();
 }
