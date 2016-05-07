@@ -1597,7 +1597,7 @@ public class AudioManager {
     public void setMode(int mode) {
         IAudioService service = getService();
         try {
-            service.setMode(mode, mICallBack, mContext.getOpPackageName());
+            service.setMode(mode, mICallBack, mApplicationContext.getOpPackageName());
         } catch (RemoteException e) {
             Log.e(TAG, "Dead object in setMode", e);
         }
@@ -3137,7 +3137,7 @@ public class AudioManager {
         IAudioService service = getService();
         try {
             service.setWiredDeviceConnectionState(device, state, name,
-                    mContext.getOpPackageName());
+                    mApplicationContext.getOpPackageName());
         } catch (RemoteException e) {
             Log.e(TAG, "Dead object in setWiredDeviceConnectionState "+e);
         }
@@ -3300,7 +3300,7 @@ public class AudioManager {
      */
     public void disableSafeMediaVolume() {
         try {
-            getService().disableSafeMediaVolume(mContext.getOpPackageName());
+            getService().disableSafeMediaVolume(mApplicationContext.getOpPackageName());
         } catch (RemoteException e) {
             Log.w(TAG, "Error disabling safe media volume", e);
         }
