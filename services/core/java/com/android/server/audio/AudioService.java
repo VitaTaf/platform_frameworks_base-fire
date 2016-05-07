@@ -4078,9 +4078,8 @@ public class AudioService extends IAudioService.Stub {
                         Iterator i = set.iterator();
                         while (i.hasNext()) {
                             Map.Entry device = (Map.Entry)i.next();
-                            DeviceListSpec spec = (DeviceListSpec)device.getValue();
                             AudioSystem.setDeviceConnectionState(
-                                                            spec.mDeviceType,
+                                                            ((Integer)device.getKey()).intValue(),
                                                             AudioSystem.DEVICE_STATE_AVAILABLE,
                                                             (String)device.getValue());
                         }
